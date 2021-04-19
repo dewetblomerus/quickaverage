@@ -1,4 +1,4 @@
-defmodule QuickAverageWeb.PageLive do
+defmodule QuickAverageWeb.AverageLive do
   use QuickAverageWeb, :live_view
 
   @impl true

@@ -1,4 +1,4 @@
-defmodule QuickAverageWeb.PageLiveTest do
+defmodule QuickAverageWeb.AverageLiveTest do
   use QuickAverageWeb.ConnCase
 
   import Phoenix.LiveViewTest
