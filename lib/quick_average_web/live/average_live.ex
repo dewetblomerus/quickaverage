@@ -1,9 +1,10 @@
 defmodule QuickAverageWeb.AverageLive do
+  require IEx
   use QuickAverageWeb, :live_view
 
   @impl true
-  def mount(_params, _session, socket) do
-    {:ok, assign(socket, name: "", number: nil, average: nil, room_id: nil)}
+  def mount(%{"room_id" => room_id}, _session, socket) do
+    {:ok, assign(socket, name: "", number: nil, average: nil, room_id: room_id)}
   end
 
   @impl true

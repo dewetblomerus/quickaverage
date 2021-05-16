@@ -1,20 +1,10 @@
 <section class="phx-hero">
-  <%= if @room_id do %>
-    <h1><%= gettext "Welcome to %{name}!", name: "Quick Average" %></h1>
-    <p>Quickly find an average</p>
+  <h1><%= gettext "Welcome to %{name}!", name: "Quick Average" %></h1>
+  <p>Quickly find an average</p>
 
-    <form phx-change="update" phx-submit="search">
-      <input type="text" name="name" value="<%= @name %>" placeholder="Name" list="results" autocomplete="off"/>
-      <input type="text" name="number" value="<%= @number %>" placeholder="Number" list="results" autocomplete="off"/>
-      <p>Average: <%=@average || "Waiting for Submissions"%></p>
-    </form>
-  <%= else %>
-    <section class="phx-hero">
-      <h1>Welcome to Quick Average</h1>
-      <p>Ask several people for a number and get the average</p>
-      <button phx-click="create-room">
-        Get a Quick Average
-      </button>
-    </section>
-  <% end %>
+  <form phx-change="update" phx-submit="search">
+    <input type="text" name="name" value="<%= @name %>" placeholder="Name" list="results" autocomplete="off"/>
+    <input type="text" name="number" value="<%= @number %>" placeholder="Number" list="results" autocomplete="off"/>
+    <p>Average: <%=@average || "Waiting for Submissions"%></p>
+  </form>
 </section>

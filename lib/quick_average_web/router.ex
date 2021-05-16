@@ -17,7 +17,8 @@ defmodule QuickAverageWeb.Router do
   scope "/", QuickAverageWeb do
     pipe_through :browser
 
-    live "/*room_id", AverageLive, :index
+    live "/", HomeLive
+    live "/:room_id", AverageLive
   end
 
   if Mix.env() in [:dev, :test] do
