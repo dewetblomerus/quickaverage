@@ -1,6 +1,6 @@
 <section class="phx-hero">
-    <section class="phx-hero">
-      <p>Click the button to get a Quick Average from multiple people</p>
-      <%= live_patch "Button Goes Here", to: Routes.live_path(@socket, QuickAverageWeb.AverageLive, 99) %>
-    </section>
+  <section class="phx-hero">
+    <p>Click the button to get a Quick Average from multiple people</p>
+    <%= create_room_link(@socket, "Create Room Link", "button") %>
+  </section>
 </section>

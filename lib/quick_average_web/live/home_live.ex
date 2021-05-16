@@ -3,15 +3,18 @@ defmodule QuickAverageWeb.HomeLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, name: "", number: nil, average: nil, room_id: nil)}
+    {:ok, socket}
   end
 
-  def handle_event("create-room", _, socket) do
-    IO.puts("creating room")
-    # socket = assign(socket, :room_id, 100)
-    {:noreply,
-     push_patch(socket, to: Routes.live_path(socket, QuickAverageWeb.AverageLive, :index))}
-
-    {:noreply, socket}
+  defp create_room_link(socket, text, class) do
+    live_patch(text,
+      to:
+        Routes.live_path(
+          socket,
+          QuickAverageWeb.AverageLive,
+          System.unique_integer([:positive])
+        ),
+      class: class
+    )
   end
 end
