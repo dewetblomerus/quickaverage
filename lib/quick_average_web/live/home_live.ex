@@ -7,7 +7,7 @@ defmodule QuickAverageWeb.HomeLive do
   end
 
   defp create_room_link(socket, text, class) do
-    live_patch(text,
+    live_redirect(text,
       to:
         Routes.live_path(
           socket,
