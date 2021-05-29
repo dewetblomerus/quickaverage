@@ -2,9 +2,18 @@
   <h1><%= gettext "Welcome to %{name}!", name: "Quick Average" %></h1>
   <p>Quickly find an average</p>
 
-  <form phx-change="update" phx-submit="search">
+  <form phx-change="update" phx-submit="find-average">
     <input type="text" name="name" value="<%= @name %>" placeholder="Name" list="results" autocomplete="off"/>
     <input type="text" name="number" value="<%= @number %>" placeholder="Number" list="results" autocomplete="off"/>
-    <p>Average: <%=@average || "Waiting for Submissions"%></p>
   </form>
+  <p>Average: <%=@average || "Waiting for Submissions"%></p>
+  <ul>
+  <%= for user <- @users do %>
+    <li>
+      Name: <%= user.name %>
+      Number: <%= user.number %>
+    </li>
+  <%= end %>
+    </ul>
+
 </section>
