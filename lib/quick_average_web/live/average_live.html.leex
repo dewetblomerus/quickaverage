@@ -1,10 +1,9 @@
 <section>
-  <h1 class="text-r text-5xl font-bold text-center">Welcome to Quick Average</h1>
-  <p>Quickly find an average</p>
+  <h1 class="text-r text-3xl m-3">Put your name and number</h1>
 
   <form phx-change="update" phx-submit="find-average">
-    <input type="text" name="name" value="<%= @name %>" placeholder="Name" list="results" autocomplete="off"/>
-    <input type="text" name="number" value="<%= @number %>" placeholder="Number" list="results" autocomplete="off"/>
+    <input type="text" name="name" value="<%= @name %>" placeholder="Name" list="results" autocomplete="off" class="block ml-auto mr-auto mb-3"/>
+    <input type="text" name="number" value="<%= @number %>" placeholder="Number" list="results" autocomplete="off" class="block ml-auto mr-auto mb-3"/>
   </form>
   <p>Average: <%=@average || "Waiting for Submissions"%></p>
   <ul>
