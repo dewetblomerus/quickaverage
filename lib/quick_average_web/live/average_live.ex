@@ -30,10 +30,22 @@ defmodule QuickAverageWeb.AverageLive do
       self(),
       socket.assigns.room_id,
       socket.id,
-      %{name: name, number: number}
+      %{name: name, number: parse_number(number)}
     )
 
-    {:noreply, assign(socket, name: name, nunber: number, average: average(number))}
+    {:noreply, assign(socket, name: name, nunber: parse_number(number))}
+  end
+
+  def parse_number(nil) do
+    nil
+  end
+
+  def parse_number("") do
+    nil
+  end
+
+  def parse_number(number_input) do
+    number_input |> Float.parse() |> elem(0)
   end
 
   def handle_event("create-room", _, socket) do
@@ -46,13 +58,26 @@ defmodule QuickAverageWeb.AverageLive do
         %{event: "presence_diff", payload: %{joins: _, leaves: _}},
         %{assigns: %{}} = socket
       ) do
-    users = Presence.list(socket.assigns.room_id) |> users_list()
+    presence_list = Presence.list(socket.assigns.room_id)
 
-    {:noreply, assign(socket, :users, users)}
+    {:noreply, assign(socket, users: users_list(presence_list), average: average(presence_list))}
   end
 
-  defp average(number) do
-    number
+  defp average(presence_list) do
+    numbers =
+      users_list(presence_list)
+      |> Enum.map(& &1.number)
+      |> Enum.filter(&(!is_nil(&1)))
+
+    calculate_average(numbers)
+  end
+
+  defp calculate_average([]) do
+    nil
+  end
+
+  defp calculate_average(numbers) do
+    Enum.sum(numbers) / Enum.count(numbers)
   end
 
   defp users_list(presence_list) do
