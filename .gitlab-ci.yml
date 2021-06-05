@@ -14,8 +14,6 @@ build:
   script:
   - echo "logging in"
   - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
-  - echo "pulling previous image for cache"
-  - docker pull registry.gitlab.com/dewetblomerus/quickaverage
   - echo "building the image"
   - docker build -t registry.gitlab.com/dewetblomerus/quickaverage:latest --cache-from registry.gitlab.com/dewetblomerus/quickaverage .
   - echo "pushing the image"
