@@ -1,35 +1,50 @@
-# Stage 1
+FROM elixir:1.12.1-alpine AS build
 
-FROM elixir:1.11.4-slim as builder
+# install build dependencies
+RUN apk add --no-cache build-base npm git python3
 
-LABEL MAINTAINER=dewetblomerus
-
-RUN apt-get update && apt-get -y install locales locales-all
-
-ENV LC_ALL en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US.UTF-8
-
-# Install hex
-RUN /usr/local/bin/mix local.hex --force && \
-  /usr/local/bin/mix local.rebar --force && \
-  /usr/local/bin/mix hex.info
-
+# prepare build dir
 WORKDIR /app
 
+# install hex + rebar
+RUN mix local.hex --force && \
+  mix local.rebar --force
+
+# set build ENV
+ENV MIX_ENV=prod
+
+# install mix dependencies
 COPY mix.exs mix.lock ./
+COPY config config
+RUN mix do deps.get, deps.compile
 
-RUN MIX_ENV=prod mix deps.get --only prod
-RUN MIX_ENV=prod mix deps.compile
+# build assets
+COPY assets/package.json assets/package-lock.json ./assets/
+RUN npm --prefix ./assets ci --progress=false --no-audit --loglevel=error
 
-COPY . .
+COPY priv priv
+COPY assets assets
+RUN npm run --prefix ./assets deploy
+RUN mix phx.digest
 
-RUN MIX_ENV=prod mix release --overwrite
+# compile and build release
+COPY lib lib
+# uncomment COPY if rel/ exists
+# COPY rel rel
+RUN mix do compile, release
 
-FROM elixir:1.11.4-slim
+# prepare release image
+FROM alpine:3.13.5 AS app
+RUN apk add --no-cache openssl ncurses-libs libstdc++
 
 WORKDIR /app
 
-COPY --from=builder /app/_build/prod/rel/quick_average ./
+RUN chown nobody:nobody /app
+
+USER nobody:nobody
+
+COPY --from=build --chown=nobody:nobody /app/_build/prod/rel/quick_average ./
+
+ENV HOME=/app
 
 CMD ["bin/quick_average", "start"]
