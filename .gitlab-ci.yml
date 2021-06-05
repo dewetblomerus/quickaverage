@@ -25,7 +25,7 @@ before_script:
 - docker info
 
 build:
-  stage: build
+  stage: deploy
   image: docker:latest
   script:
   - echo "logging in"
