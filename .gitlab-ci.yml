@@ -15,7 +15,7 @@ mix:
 
 
 build:
-  stage: deploy
+  stage: test
   image: docker:latest
   variables:
     DOCKER_DRIVER: overlay
