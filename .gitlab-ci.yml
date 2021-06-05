@@ -9,6 +9,7 @@ before_script:
   - mix deps.get
 
 mix:
+  stage: test
   image: elixir:latest
   script:
     - mix test
@@ -24,6 +25,7 @@ before_script:
 - docker info
 
 build:
+  stage: build
   image: docker:latest
   script:
   - echo "logging in"
