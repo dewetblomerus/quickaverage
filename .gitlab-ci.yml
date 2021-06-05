@@ -3,30 +3,26 @@
 # Only needed when using a docker container to run your tests in.
 # Check out: http://docs.gitlab.com/ee/ci/docker/using_docker_images.html#what-is-a-service
 
-before_script:
-  - mix local.rebar --force
-  - mix local.hex --force
-  - mix deps.get
-
 mix:
   stage: test
   image: elixir:latest
+  before_script:
+    - mix local.rebar --force
+    - mix local.hex --force
+    - mix deps.get
   script:
     - mix test
 
 
-variables:
-  DOCKER_DRIVER: overlay
-
-services:
-- docker:dind
-
-before_script:
-- docker info
-
 build:
   stage: deploy
   image: docker:latest
+  variables:
+    DOCKER_DRIVER: overlay
+  services:
+  - docker:dind
+  before_script:
+  - docker info
   script:
   - echo "logging in"
   - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
