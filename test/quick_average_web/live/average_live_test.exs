@@ -5,7 +5,7 @@ defmodule QuickAverageWeb.AverageLiveTest do
 
   test "disconnected and connected render", %{conn: conn} do
     {:ok, page_live, disconnected_html} = live(conn, "/some_page_id")
-    assert disconnected_html =~ "Welcome to Quick Average!"
-    assert render(page_live) =~ "Welcome to Quick Average!"
+    assert disconnected_html =~ "Waiting for Submissions"
+    assert render(page_live) =~ "Waiting for Submissions"
   end
 end
