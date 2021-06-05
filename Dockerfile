@@ -1,4 +1,4 @@
-FROM elixir:1.9.4-alpine AS build
+FROM elixir:1.12.1-alpine AS build
 
 # install build dependencies
 RUN apk add --no-cache build-base npm git python3
@@ -34,8 +34,8 @@ COPY lib lib
 RUN mix do compile, release
 
 # prepare release image
-FROM alpine:3.9 AS app
-RUN apk add --no-cache openssl ncurses-libs
+FROM alpine:3.13.5 AS app
+RUN apk add --no-cache openssl ncurses-libs libstdc++
 
 WORKDIR /app
 
