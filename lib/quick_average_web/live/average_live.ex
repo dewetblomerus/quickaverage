@@ -80,7 +80,16 @@ defmodule QuickAverageWeb.AverageLive do
   end
 
   defp calculate_average(numbers) do
-    (Enum.sum(numbers) / Enum.count(numbers)) |> Float.round(2)
+    (Enum.sum(numbers) / Enum.count(numbers))
+    |> Float.round(2)
+    |> display_number()
+  end
+
+  defp display_number(number) do
+    case Float.ratio(number) do
+      {int, 1} -> int
+      _ -> number
+    end
   end
 
   defp users_list(presence_list) do
