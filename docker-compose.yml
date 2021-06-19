@@ -5,9 +5,8 @@ services:
     build: .
     container_name: quickaverage
     ports:
-      - 4000:4000
+      - ${PORT}:4000
     environment:
       - HOST=${HOST}
-      - PORT=${PORT}
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
     restart: unless-stopped
