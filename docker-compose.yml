@@ -2,7 +2,6 @@ version: "3.3"
 services:
   quickaverage:
     image: registry.gitlab.com/dewetblomerus/quickaverage
-    build: .
     container_name: quickaverage
     ports:
       - ${PORT}:4000
