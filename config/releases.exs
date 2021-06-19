@@ -3,7 +3,7 @@
 # although such is generally not recommended and you have to
 # remember to add this file to your .gitignore.
 import Config
-port = String.to_integer(System.fetch_env!("PORT"))
+port = 4000
 
 config :quick_average, QuickAverageWeb.Endpoint,
   http: [
