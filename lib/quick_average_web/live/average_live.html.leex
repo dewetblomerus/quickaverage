@@ -16,7 +16,7 @@
     </form>
   </div>
 
-  <h1 class="text-r text-3xl m-3">Average: <%=@average || "Waiting"%></h1>
+  <h1 class="text-r text-3xl m-3">Average: <%= display_number(@average) || "Waiting"%></h1>
 
   <div class="flex ...">
     <div class="flex-grow h-16">
@@ -34,7 +34,7 @@
           <%= for user <- @users do %>
             <tr class="bg-emerald-200">
               <td class="text-left max-w-xs"> <%= user.name %> </td>
-              <td class="text-right"> <%= user.number || "Waiting" %> </td>
+              <td class="text-right"> <%= display_number(user.number) || "Waiting" %> </td>
             </tr>
           <%= end %>
         </tbody>

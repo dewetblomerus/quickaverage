@@ -82,7 +82,10 @@ defmodule QuickAverageWeb.AverageLive do
   defp calculate_average(numbers) do
     (Enum.sum(numbers) / Enum.count(numbers))
     |> Float.round(2)
-    |> display_number()
+  end
+
+  defp display_number(nil) do
+    nil
   end
 
   defp display_number(number) do
