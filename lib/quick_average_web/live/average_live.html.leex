@@ -1,6 +1,4 @@
 <section>
-  <h1 class="text-r text-3xl m-3">Put your name and number</h1>
-
   <div class="w-full max-w-xs m-auto">
     <form phx-change="update" phx-submit="find-average" class="bg-white border  rounded-lg px-8 pt-6 pb-8 mb-4">
       <div class="mb-4">
@@ -18,14 +16,32 @@
     </form>
   </div>
 
-  <p>Average: <%=@average || "Waiting for Submissions"%></p>
-  <ul>
-  <%= for user <- @users do %>
-    <li>
-      Name: <%= user.name %>
-      Number: <%= user.number %>
-    </li>
-  <%= end %>
-    </ul>
+  <h1 class="text-r text-3xl m-3">Average: <%=@average || "Waiting"%></h1>
 
+  <div class="flex ...">
+    <div class="flex-grow h-16">
+      <!-- This item will grow -->
+    </div>
+    <div class="flex-grow-0 h-16">
+      <table class="table-auto">
+        <thead>
+          <tr>
+            <th class="text-left">Name</th>
+            <th class="text-right">Number</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= for user <- @users do %>
+            <tr class="bg-emerald-200">
+              <td class="text-left max-w-xs"> <%= user.name %> </td>
+              <td class="text-right"> <%= user.number || "Waiting" %> </td>
+            </tr>
+          <%= end %>
+        </tbody>
+      </table>
+    </div>
+    <div class="flex-grow h-16">
+      <!-- This item will grow -->
+    </div>
+  </div>
 </section>
