@@ -38,7 +38,7 @@ defmodule QuickAverageWeb.AverageLive do
 
   def parse_number(number_input) do
     case Float.parse(number_input) do
-      {int, ""} -> int
+      {num, ""} -> Float.round(num, 2)
       _ -> nil
     end
   end
@@ -80,7 +80,7 @@ defmodule QuickAverageWeb.AverageLive do
   end
 
   defp calculate_average(numbers) do
-    Enum.sum(numbers) / Enum.count(numbers)
+    (Enum.sum(numbers) / Enum.count(numbers)) |> Float.round(2)
   end
 
   defp users_list(presence_list) do
