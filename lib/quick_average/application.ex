@@ -12,8 +12,9 @@ defmodule QuickAverage.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: QuickAverage.PubSub},
       QuickAverageWeb.Presence,
+      {SiteEncrypt.Phoenix, QuickAverageWeb.Endpoint}
       # Start the Endpoint (http/https)
-      QuickAverageWeb.Endpoint
+
       # Start a worker by calling: QuickAverage.Worker.start_link(arg)
       # {QuickAverage.Worker, arg}
     ]
