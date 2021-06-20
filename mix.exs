@@ -43,6 +43,7 @@ defmodule QuickAverage.MixProject do
       {:phoenix_live_view, "~> 0.15.1"},
       {:phoenix, "~> 1.5.8"},
       {:plug_cowboy, "~> 2.0"},
+      {:site_encrypt, "~> 0.4"},
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"}
     ]
