@@ -4,8 +4,8 @@
 # remember to add this file to your .gitignore.
 import Config
 
-http_port = System.fetch_env!("HTTP_PORT")
-https_port = System.fetch_env!("HTTPS_PORT")
+http_port = 4000
+https_port = 4001
 
 config :quick_average, QuickAverageWeb.Endpoint,
   http: [
