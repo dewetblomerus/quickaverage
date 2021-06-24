@@ -3,15 +3,21 @@
 # although such is generally not recommended and you have to
 # remember to add this file to your .gitignore.
 import Config
-port = 4000
+
+http_port = System.fetch_env!("HTTP_PORT")
+https_port = System.fetch_env!("HTTPS_PORT")
 
 config :quick_average, QuickAverageWeb.Endpoint,
   http: [
-    port: port,
+    port: http_port,
     transport_options: [socket_opts: [:inet6]]
   ],
+  https: [
+    port: https_port,
+    cipher_suite: :strong
+  ],
   secret_key_base: System.fetch_env!("SECRET_KEY_BASE"),
-  url: [host: System.fetch_env!("HOST"), port: port]
+  url: [host: System.fetch_env!("HOST"), port: https_port]
 
 # ## Using releases (Elixir v1.9+)
 #
