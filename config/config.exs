@@ -9,9 +9,14 @@ use Mix.Config
 
 # Configures the endpoint
 config :quick_average, QuickAverageWeb.Endpoint,
-  url: [host: "localhost"],
-  secret_key_base: "HPq5hgfoebR5C8R4ogYNtHj8mJOLZm12nkcZZylVreIEQhHRTuFEPfxcNHi3Bn++",
-  render_errors: [view: QuickAverageWeb.ErrorView, accepts: ~w(html json), layout: false],
+  url: [host: "av.dev"],
+  secret_key_base:
+    "HPq5hgfoebR5C8R4ogYNtHj8mJOLZm12nkcZZylVreIEQhHRTuFEPfxcNHi3Bn++",
+  render_errors: [
+    view: QuickAverageWeb.ErrorView,
+    accepts: ~w(html json),
+    layout: false
+  ],
   pubsub_server: QuickAverage.PubSub,
   live_view: [signing_salt: "x0WejuJy"]
 
