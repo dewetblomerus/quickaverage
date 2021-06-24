@@ -4,8 +4,11 @@ services:
     image: registry.gitlab.com/dewetblomerus/quickaverage
     container_name: quickaverage
     ports:
-      - ${PORT}:4000
+      - ${HTTP_PORT}:4000
+      - ${HTTPS_PORT}:4001
     environment:
       - HOST=${HOST}
+      - HTTP_PORT=${HTTP_PORT}
+      - HTTPS_PORT=${HTTPS_PORT}
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
     restart: unless-stopped
