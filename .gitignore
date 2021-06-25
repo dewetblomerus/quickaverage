@@ -35,3 +35,4 @@ npm-debug.log
 /priv/static/
 /priv/cert
 /tmp
+site_encrypt_db
