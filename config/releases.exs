@@ -4,8 +4,8 @@
 # remember to add this file to your .gitignore.
 import Config
 
-http_port = 4000
-https_port = 4001
+http_port = 80
+https_port = 443
 
 config :quick_average, QuickAverageWeb.Endpoint,
   http: [
