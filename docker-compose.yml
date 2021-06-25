@@ -9,4 +9,7 @@ services:
     environment:
       - HOST=${HOST}
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+      - SITE_ENCRYPT_DB=${SITE_ENCRYPT_DB:-/tmp/site_encrypt_db}
+    volumes:
+      - ./site_encrypt_db:${SITE_ENCRYPT_DB:-/tmp/site_encrypt_db}
     restart: unless-stopped

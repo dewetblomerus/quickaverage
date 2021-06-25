@@ -14,7 +14,8 @@ config :quick_average, QuickAverageWeb.Endpoint,
   ],
   https: [
     port: https_port,
-    cipher_suite: :strong
+    cipher_suite: :strong,
+    transport_options: [socket_opts: [:inet6]]
   ],
   secret_key_base: System.fetch_env!("SECRET_KEY_BASE"),
   url: [host: System.fetch_env!("HOST"), port: https_port]
