@@ -11,6 +11,7 @@ use Mix.Config
 # before starting your production server.
 config :quick_average, QuickAverageWeb.Endpoint,
   cache_static_manifest: "priv/static/cache_manifest.json",
+  force_ssl: [hsts: true],
   server: true
 
 # Do not print debug messages in production
