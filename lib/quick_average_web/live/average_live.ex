@@ -33,7 +33,7 @@ defmodule QuickAverageWeb.AverageLive do
       %{name: name, number: parse_number(number)}
     )
 
-    {:noreply, assign(socket, name: name, nunber: parse_number(number))}
+    {:noreply, assign(socket, name: name, number: parse_number(number))}
   end
 
   def parse_number(number_input) do
