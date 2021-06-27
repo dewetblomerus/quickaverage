@@ -47,11 +47,6 @@ defmodule QuickAverageWeb.AverageLive do
     nil
   end
 
-  def handle_event("create-room", _, socket) do
-    socket = assign(socket, :room_id, 100)
-    {:noreply, socket}
-  end
-
   @impl true
   def handle_info(
         %{event: "presence_diff", payload: %{joins: _, leaves: _}},
