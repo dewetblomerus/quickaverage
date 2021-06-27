@@ -76,7 +76,7 @@ defmodule QuickAverageWeb.AverageLive do
   end
 
   defp display_number(nil) do
-    nil
+    "Waiting"
   end
 
   defp display_number(number) do
