@@ -43,10 +43,6 @@ defmodule QuickAverageWeb.AverageLive do
     end
   end
 
-  def parse_number(_) do
-    nil
-  end
-
   @impl true
   def handle_info(
         %{event: "presence_diff", payload: %{joins: _, leaves: _}},
