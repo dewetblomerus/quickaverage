@@ -45,8 +45,8 @@ defmodule QuickAverageWeb.AverageLive do
 
   @impl true
   def handle_info(
-        %{event: "presence_diff", payload: %{joins: _, leaves: _}},
-        %{assigns: %{}} = socket
+        %{event: "presence_diff"},
+        socket
       ) do
     presence_list = Presence.list(socket.assigns.room_id)
 
