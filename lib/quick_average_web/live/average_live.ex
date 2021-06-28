@@ -45,8 +45,8 @@ defmodule QuickAverageWeb.AverageLive do
 
   @impl true
   def handle_info(
-        %{event: "presence_diff", payload: %{joins: _, leaves: _}},
-        %{assigns: %{}} = socket
+        %{event: "presence_diff"},
+        socket
       ) do
     presence_list = Presence.list(socket.assigns.room_id)
 
@@ -92,5 +92,23 @@ defmodule QuickAverageWeb.AverageLive do
       [head | _] = u.metas
       head
     end)
+  end
+
+  defp display_name(text, opts \\ []) do
+    max_length = opts[:max_length] || 25
+    omission = opts[:omission] || "..."
+
+    cond do
+      not String.valid?(text) ->
+        text
+
+      String.length(text) < max_length ->
+        text
+
+      true ->
+        length_with_omission = max_length - String.length(omission)
+
+        "#{String.slice(text, 0, length_with_omission)}#{omission}"
+    end
   end
 end
