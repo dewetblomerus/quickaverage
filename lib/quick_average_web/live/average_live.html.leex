@@ -33,7 +33,7 @@
         <tbody>
           <%= for user <- @users do %>
             <tr class="bg-emerald-200">
-              <td class="text-left max-w-xs pr-2"> <%= user.name %> </td>
+              <td class="text-left max-w-xs pr-2"> <%= display_name(user.name) %> </td>
               <td class="text-right"> <%= display_number(user.number) %> </td>
             </tr>
           <%= end %>
