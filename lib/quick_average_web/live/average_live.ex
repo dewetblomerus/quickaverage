@@ -2,6 +2,7 @@ defmodule QuickAverageWeb.AverageLive do
   require IEx
   use QuickAverageWeb, :live_view
   alias QuickAverageWeb.Presence
+  alias QuickAverageWeb.Users
 
   @impl true
   def mount(%{"room_id" => room_id}, _session, socket) do
@@ -52,14 +53,14 @@ defmodule QuickAverageWeb.AverageLive do
 
     {:noreply,
      assign(socket,
-       users: users_list(presence_list),
+       users: Users.list_users(presence_list),
        average: average(presence_list)
      )}
   end
 
   defp average(presence_list) do
     numbers =
-      users_list(presence_list)
+      Users.list_users(presence_list)
       |> Enum.map(& &1.number)
       |> Enum.filter(&(!is_nil(&1)))
 
@@ -84,14 +85,6 @@ defmodule QuickAverageWeb.AverageLive do
       {int, 1} -> int
       _ -> number
     end
-  end
-
-  defp users_list(presence_list) do
-    Map.values(presence_list)
-    |> Enum.map(fn u ->
-      [head | _] = u.metas
-      head
-    end)
   end
 
   defp display_name(text, opts \\ []) do
