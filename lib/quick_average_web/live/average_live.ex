@@ -20,6 +20,7 @@ defmodule QuickAverageWeb.AverageLive do
        name: "",
        number: nil,
        average: nil,
+       admin: false,
        room_id: room_id,
        users: []
      )}
@@ -35,6 +36,22 @@ defmodule QuickAverageWeb.AverageLive do
     )
 
     {:noreply, assign(socket, name: name, number: parse_number(number))}
+  end
+
+  def handle_event(
+        "restore_user",
+        %{"admin_state" => admin_state},
+        socket
+      ) do
+    admin_string = "#{socket.assigns.room_id}:true"
+
+    admin =
+      case admin_state do
+        ^admin_string -> true
+        _ -> false
+      end
+
+    {:noreply, assign(socket, admin: admin)}
   end
 
   def parse_number(number_input) do
