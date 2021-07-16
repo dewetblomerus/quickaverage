@@ -19,6 +19,12 @@
 
   <h1 class="text-r text-3xl m-3">Average: <%= display_number(@average) %></h1>
 
+  <%= if @admin do %>
+    <button phx-click="clear_clicked">
+      Clear All Numbers
+    </button>
+  <% end %>
+
   <div class="flex ...">
     <div class="flex-grow h-16">
       <!-- This item will grow -->

@@ -1,6 +1,7 @@
 defmodule QuickAverageWeb.AverageLive do
   require IEx
   use QuickAverageWeb, :live_view
+  alias Phoenix.PubSub
   alias QuickAverageWeb.Presence
   alias QuickAverageWeb.Presence.Helpers
 
@@ -54,6 +55,18 @@ defmodule QuickAverageWeb.AverageLive do
     {:noreply, assign(socket, admin: admin)}
   end
 
+  def handle_event("clear_clicked", _, socket) do
+    if socket.assigns.admin do
+      PubSub.broadcast(
+        QuickAverage.PubSub,
+        socket.assigns.room_id,
+        "clear"
+      )
+    end
+
+    {:noreply, socket}
+  end
+
   def parse_number(number_input) do
     case Float.parse(number_input) do
       {num, ""} -> Float.round(num, 2)
@@ -72,6 +85,24 @@ defmodule QuickAverageWeb.AverageLive do
      assign(socket,
        users: Helpers.list_users(presence_list),
        average: Helpers.average(presence_list)
+     )}
+  end
+
+  @impl true
+  def handle_info("clear", socket) do
+    Presence.update(
+      self(),
+      socket.assigns.room_id,
+      socket.id,
+      %{name: socket.assigns.name, number: nil}
+    )
+
+    presence_list = Presence.list(socket.assigns.room_id)
+
+    {:noreply,
+     assign(socket,
+       number: nil,
+       users: Helpers.list_users(presence_list)
      )}
   end
 
