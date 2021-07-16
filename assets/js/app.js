@@ -17,11 +17,32 @@ import { Socket } from 'phoenix'
 import topbar from 'topbar'
 import { LiveSocket } from 'phoenix_live_view'
 
+let Hooks = {}
+Hooks.SetStorage = {
+  mounted() {
+    this.handleEvent('set_storage', (data) => {
+      for (const [key, value] of Object.entries(data)) {
+        localStorage.setItem(key, value)
+      }
+    })
+  },
+}
+
+Hooks.GetStorage = {
+  mounted() {
+    this.pushEvent('restore_user', {
+      admin_state: localStorage.getItem('admin_state'),
+    })
+  },
+}
+
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute('content')
+
 let liveSocket = new LiveSocket('/live', Socket, {
   params: { _csrf_token: csrfToken },
+  hooks: Hooks,
 })
 
 // Show progress bar on live navigation and form submits
