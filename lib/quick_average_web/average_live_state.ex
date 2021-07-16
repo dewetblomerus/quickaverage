@@ -1,4 +1,4 @@
-defmodule QuickAverageWeb.Presence.Helpers do
+defmodule QuickAverageWeb.AverageLive.State do
   def list_users(presence_list) do
     Map.values(presence_list)
     |> Enum.map(fn u ->
@@ -14,6 +14,10 @@ defmodule QuickAverageWeb.Presence.Helpers do
       |> Enum.filter(&(!is_nil(&1)))
 
     calculate_average(numbers)
+  end
+
+  def reveal_numbers?(users_list) do
+    Enum.all?(users_list, fn user -> user.number end)
   end
 
   defp calculate_average([]) do
