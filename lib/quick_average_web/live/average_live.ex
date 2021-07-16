@@ -2,8 +2,8 @@ defmodule QuickAverageWeb.AverageLive do
   require IEx
   use QuickAverageWeb, :live_view
   alias Phoenix.PubSub
+  alias QuickAverageWeb.AverageLive.State
   alias QuickAverageWeb.Presence
-  alias QuickAverageWeb.Presence.Helpers
 
   @impl true
   def mount(%{"room_id" => room_id}, _session, socket) do
@@ -83,8 +83,8 @@ defmodule QuickAverageWeb.AverageLive do
 
     {:noreply,
      assign(socket,
-       users: Helpers.list_users(presence_list),
-       average: Helpers.average(presence_list)
+       users: State.list_users(presence_list),
+       average: State.average(presence_list)
      )}
   end
 
@@ -102,7 +102,7 @@ defmodule QuickAverageWeb.AverageLive do
     {:noreply,
      assign(socket,
        number: nil,
-       users: Helpers.list_users(presence_list)
+       users: State.list_users(presence_list)
      )}
   end
 

@@ -1,4 +1,4 @@
-defmodule QuickAverageWeb.Presence.Helpers do
+defmodule QuickAverageWeb.AverageLive.State do
   def list_users(presence_list) do
     Map.values(presence_list)
     |> Enum.map(fn u ->

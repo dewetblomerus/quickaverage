@@ -1,6 +1,6 @@
-defmodule QuickAverageWeb.Presence.HelpersTest do
+defmodule QuickAverageWeb.AverageLive.StateTest do
   use ExUnit.Case, async: true
-  alias QuickAverageWeb.Presence.Helpers
+  alias QuickAverageWeb.AverageLive.State
 
   @presence_list %{
     "phx-FpFUEe4C66uTTgHH" => %{
@@ -58,13 +58,13 @@ defmodule QuickAverageWeb.Presence.HelpersTest do
 
   describe("list_users/1") do
     test "lists the users" do
-      assert Helpers.list_users(@presence_list) == @users_list
+      assert State.list_users(@presence_list) == @users_list
     end
   end
 
   describe("average/1") do
     test "lists the users" do
-      assert Helpers.average(@presence_list) == 8.33
+      assert State.average(@presence_list) == 8.33
     end
   end
 end
