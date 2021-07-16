@@ -22,6 +22,7 @@ defmodule QuickAverageWeb.AverageLive do
        number: nil,
        average: nil,
        admin: false,
+       reveal: false,
        room_id: room_id,
        users: []
      )}
@@ -80,11 +81,13 @@ defmodule QuickAverageWeb.AverageLive do
         socket
       ) do
     presence_list = Presence.list(socket.assigns.room_id)
+    users = State.list_users(presence_list)
 
     {:noreply,
      assign(socket,
-       users: State.list_users(presence_list),
-       average: State.average(presence_list)
+       users: users,
+       average: State.average(presence_list),
+       reveal: State.reveal_numbers?(users)
      )}
   end
 
@@ -108,11 +111,15 @@ defmodule QuickAverageWeb.AverageLive do
 
   # template helpers
 
-  defp display_number(nil) do
-    "Waiting"
-  end
+  defp display_average(_, false), do: "Waiting"
 
-  defp display_number(number) do
+  defp display_average(number, reveal), do: display_number(number, reveal)
+
+  defp display_number(nil, _), do: "Waiting"
+
+  defp display_number(_, false), do: "Hidden"
+
+  defp display_number(number, true) do
     case Float.ratio(number) do
       {int, 1} -> int
       _ -> number

@@ -16,6 +16,10 @@ defmodule QuickAverageWeb.AverageLive.State do
     calculate_average(numbers)
   end
 
+  def reveal_numbers?(users_list) do
+    Enum.all?(users_list, fn user -> user.number end)
+  end
+
   defp calculate_average([]) do
     nil
   end
