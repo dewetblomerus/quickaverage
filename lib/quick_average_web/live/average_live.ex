@@ -30,6 +30,10 @@ defmodule QuickAverageWeb.AverageLive do
 
   @impl true
   def handle_event("update", %{"name" => name, "number" => number}, socket) do
+    if name != socket.assigns.name do
+      send(self(), %{store_name: name})
+    end
+
     Presence.update(
       self(),
       socket.assigns.room_id,
@@ -42,7 +46,7 @@ defmodule QuickAverageWeb.AverageLive do
 
   def handle_event(
         "restore_user",
-        %{"admin_state" => admin_state_token},
+        %{"admin_state" => admin_state_token, "name" => name},
         socket
       ) do
     admin_string = "#{socket.assigns.room_id}:true"
@@ -55,13 +59,22 @@ defmodule QuickAverageWeb.AverageLive do
         max_age: 86_400
       )
 
+    if name do
+      Presence.update(
+        self(),
+        socket.assigns.room_id,
+        socket.id,
+        %{name: name, number: nil}
+      )
+    end
+
     admin =
       case admin_state do
         {:ok, ^admin_string} -> true
         _ -> false
       end
 
-    {:noreply, assign(socket, admin: admin)}
+    {:noreply, assign(socket, admin: admin, name: name)}
   end
 
   def handle_event("clear_clicked", _, socket) do
@@ -115,6 +128,13 @@ defmodule QuickAverageWeb.AverageLive do
        number: nil,
        users: State.list_users(presence_list)
      )}
+  end
+
+  def handle_info(%{store_name: name}, socket) do
+    {:noreply,
+     push_event(socket, "set_storage", %{
+       name: name
+     })}
   end
 
   # template helpers
