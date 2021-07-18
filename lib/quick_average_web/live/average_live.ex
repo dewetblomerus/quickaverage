@@ -42,14 +42,22 @@ defmodule QuickAverageWeb.AverageLive do
 
   def handle_event(
         "restore_user",
-        %{"admin_state" => admin_state},
+        %{"admin_state" => admin_state_token},
         socket
       ) do
     admin_string = "#{socket.assigns.room_id}:true"
 
+    admin_state =
+      Phoenix.Token.verify(
+        QuickAverageWeb.Endpoint,
+        "admin state",
+        admin_state_token,
+        max_age: 86_400
+      )
+
     admin =
       case admin_state do
-        ^admin_string -> true
+        {:ok, ^admin_string} -> true
         _ -> false
       end
 
