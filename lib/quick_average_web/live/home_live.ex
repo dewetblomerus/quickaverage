@@ -8,9 +8,16 @@ defmodule QuickAverageWeb.HomeLive do
 
   @impl true
   def handle_info(%{setup_user: next_room_id}, socket) do
+    admin_state_token =
+      Phoenix.Token.sign(
+        QuickAverageWeb.Endpoint,
+        "admin state",
+        "#{next_room_id}:true"
+      )
+
     {:noreply,
      push_event(socket, "set_storage", %{
-       admin_state: "#{next_room_id}:true"
+       admin_state: admin_state_token
      })}
   end
 
