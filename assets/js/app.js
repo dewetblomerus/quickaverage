@@ -32,6 +32,7 @@ Hooks.GetStorage = {
   mounted() {
     this.pushEvent('restore_user', {
       admin_state: localStorage.getItem('admin_state'),
+      name: localStorage.getItem('name'),
     })
   },
 }
