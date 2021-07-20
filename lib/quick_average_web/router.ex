@@ -14,13 +14,6 @@ defmodule QuickAverageWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", QuickAverageWeb do
-    pipe_through :browser
-
-    live "/", HomeLive
-    live "/:room_id", AverageLive
-  end
-
   if Mix.env() in [:dev, :test] do
     import Phoenix.LiveDashboard.Router
 
@@ -28,5 +21,12 @@ defmodule QuickAverageWeb.Router do
       pipe_through :browser
       live_dashboard "/dashboard", metrics: QuickAverageWeb.Telemetry
     end
+  end
+
+  scope "/", QuickAverageWeb do
+    pipe_through :browser
+
+    live "/", HomeLive
+    live "/:room_id", AverageLive
   end
 end
