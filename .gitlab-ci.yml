@@ -27,6 +27,7 @@ build:
   - echo "logging in"
   - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
   - echo "building the image"
-  - docker build -t registry.gitlab.com/dewetblomerus/quickaverage:latest --cache-from registry.gitlab.com/dewetblomerus/quickaverage .
+  - echo "$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
+  - docker build -t registry.gitlab.com/dewetblomerus/quickaverage:$CI_COMMIT_BRANCH --cache-from registry.gitlab.com/dewetblomerus/quickaverage .
   - echo "pushing the image"
-  - docker push registry.gitlab.com/dewetblomerus/quickaverage:latest
+  - docker push registry.gitlab.com/dewetblomerus/quickaverage:$CI_COMMIT_BRANCH
