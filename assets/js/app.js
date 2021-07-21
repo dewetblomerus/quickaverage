@@ -28,6 +28,14 @@ Hooks.SetStorage = {
   },
 }
 
+Hooks.ClearNumber = {
+  mounted() {
+    this.handleEvent('clear_number', () => {
+      document.getElementById('number').value = ''
+    })
+  },
+}
+
 Hooks.GetStorage = {
   mounted() {
     this.pushEvent('restore_user', {

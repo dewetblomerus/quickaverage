@@ -114,6 +114,8 @@ defmodule QuickAverageWeb.AverageLive do
 
   @impl true
   def handle_info("clear", socket) do
+    send(self(), "clear_number_front")
+
     Presence.update(
       self(),
       socket.assigns.room_id,
@@ -135,6 +137,10 @@ defmodule QuickAverageWeb.AverageLive do
      push_event(socket, "set_storage", %{
        name: name
      })}
+  end
+
+  def handle_info("clear_number_front", socket) do
+    {:noreply, push_event(socket, "clear_number", %{})}
   end
 
   # template helpers
