@@ -27,6 +27,7 @@ defmodule QuickAverageWeb.AverageLive do
        number: nil,
        presence_list: presence_list,
        reveal: false,
+       reveal_clicked: false,
        room_id: room_id
      )}
   end
@@ -92,6 +93,18 @@ defmodule QuickAverageWeb.AverageLive do
     {:noreply, socket}
   end
 
+  def handle_event("reveal", _, socket) do
+    if socket.assigns.admin do
+      PubSub.broadcast(
+        QuickAverage.PubSub,
+        socket.assigns.room_id,
+        "reveal"
+      )
+    end
+
+    {:noreply, socket}
+  end
+
   def parse_number(number_input) do
     case Float.parse(number_input) do
       {num, ""} -> Float.round(num, 2)
@@ -119,7 +132,7 @@ defmodule QuickAverageWeb.AverageLive do
      assign(socket,
        average: LiveState.average(presence_list),
        presence_list: presence_list,
-       reveal: reveal?(presence_list)
+       reveal: reveal?(presence_list) || socket.assigns.reveal_clicked
      )}
   end
 
@@ -134,7 +147,7 @@ defmodule QuickAverageWeb.AverageLive do
       %{name: socket.assigns.name, number: nil}
     )
 
-    {:noreply, assign(socket, number: nil)}
+    {:noreply, assign(socket, number: nil, reveal_clicked: false)}
   end
 
   def handle_info(%{store_name: name}, socket) do
@@ -146,6 +159,10 @@ defmodule QuickAverageWeb.AverageLive do
 
   def handle_info("clear_number_front", socket) do
     {:noreply, push_event(socket, "clear_number", %{})}
+  end
+
+  def handle_info("reveal", socket) do
+    {:noreply, assign(socket, reveal_clicked: true, reveal: true)}
   end
 
   # template helpers
