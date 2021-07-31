@@ -2,7 +2,8 @@ defmodule QuickAverageWeb.AverageLive do
   require IEx
   use QuickAverageWeb, :live_view
   alias Phoenix.PubSub
-  alias QuickAverageWeb.AverageLive.State
+  alias QuickAverageWeb.AverageLive.State, as: LiveState
+  alias QuickAverageWeb.Presence.State, as: PresenceState
   alias QuickAverageWeb.Presence
 
   @impl true
@@ -16,15 +17,17 @@ defmodule QuickAverageWeb.AverageLive do
       %{name: "New User", number: nil}
     )
 
+    presence_list = Presence.list(room_id)
+
     {:ok,
      assign(socket,
+       admin: false,
+       average: nil,
        name: "",
        number: nil,
-       average: nil,
-       admin: false,
+       presence_list: presence_list,
        reveal: false,
-       room_id: room_id,
-       users: []
+       room_id: room_id
      )}
   end
 
@@ -96,19 +99,27 @@ defmodule QuickAverageWeb.AverageLive do
     end
   end
 
+  def reveal?(presence_list) do
+    presence_list
+    |> LiveState.list_users()
+    |> LiveState.reveal_numbers?()
+  end
+
   @impl true
   def handle_info(
-        %{event: "presence_diff"},
+        %Phoenix.Socket.Broadcast{
+          event: "presence_diff",
+          payload: payload
+        },
         socket
       ) do
-    presence_list = Presence.list(socket.assigns.room_id)
-    users = State.list_users(presence_list)
+    presence_list = PresenceState.patch(socket.assigns.presence_list, payload)
 
     {:noreply,
      assign(socket,
-       users: users,
-       average: State.average(presence_list),
-       reveal: State.reveal_numbers?(users)
+       average: LiveState.average(presence_list),
+       presence_list: presence_list,
+       reveal: reveal?(presence_list)
      )}
   end
 
@@ -123,13 +134,7 @@ defmodule QuickAverageWeb.AverageLive do
       %{name: socket.assigns.name, number: nil}
     )
 
-    presence_list = Presence.list(socket.assigns.room_id)
-
-    {:noreply,
-     assign(socket,
-       number: nil,
-       users: State.list_users(presence_list)
-     )}
+    {:noreply, assign(socket, number: nil)}
   end
 
   def handle_info(%{store_name: name}, socket) do
