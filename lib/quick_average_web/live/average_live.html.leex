@@ -23,7 +23,10 @@
 
   <%= if @admin do %>
     <button phx-click="clear_clicked" class="bg-white hover:bg-red-500 py-1 px-4 border border-gray-400 rounded-lg mb-2" >
-      Clear All Numbers
+      Clear Numbers
+    </button>
+    <button phx-click="reveal" class="bg-white hover:bg-gray-300 py-1 px-4 border border-gray-400 rounded-lg mb-2" >
+      Reveal
     </button>
   <% end %>
 
