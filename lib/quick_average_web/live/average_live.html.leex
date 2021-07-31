@@ -40,7 +40,7 @@
           </tr>
         </thead>
         <tbody>
-          <%= for user <- @users do %>
+          <%= for user <- LiveState.list_users(@presence_list) do %>
             <tr class="bg-emerald-200">
               <td class="text-left max-w-xs pr-2"> <%= display_name(user.name) %> </td>
               <td class="text-right"> <%= display_number(user.number, @reveal) %> </td>
