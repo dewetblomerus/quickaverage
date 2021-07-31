@@ -3,8 +3,8 @@ defmodule QuickAverageWeb.AverageLive do
   use QuickAverageWeb, :live_view
   alias Phoenix.PubSub
   alias QuickAverageWeb.AverageLive.State, as: LiveState
-  alias QuickAverageWeb.Presence.State, as: PresenceState
   alias QuickAverageWeb.Presence
+  alias QuickAverageWeb.Presence.State, as: PresenceState
 
   @impl true
   def mount(%{"room_id" => room_id}, _session, socket) do
