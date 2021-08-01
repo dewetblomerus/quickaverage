@@ -38,10 +38,8 @@ defmodule QuickAverageWeb.AverageLive do
       send(self(), %{store_name: name})
     end
 
-    Presence.update(
-      self(),
-      socket.assigns.room_id,
-      socket.id,
+    presence_update(
+      socket,
       %{name: name, number: parse_number(number)}
     )
 
@@ -64,10 +62,8 @@ defmodule QuickAverageWeb.AverageLive do
       )
 
     if name do
-      Presence.update(
-        self(),
-        socket.assigns.room_id,
-        socket.id,
+      presence_update(
+        socket,
         %{name: name, number: nil}
       )
     end
@@ -105,6 +101,15 @@ defmodule QuickAverageWeb.AverageLive do
     {:noreply, socket}
   end
 
+  def presence_update(socket, meta) do
+    Presence.update(
+      self(),
+      socket.assigns.room_id,
+      socket.id,
+      meta
+    )
+  end
+
   def parse_number(number_input) do
     case Float.parse(number_input) do
       {num, ""} -> Float.round(num, 2)
@@ -140,10 +145,8 @@ defmodule QuickAverageWeb.AverageLive do
   def handle_info("clear", socket) do
     send(self(), "clear_number_front")
 
-    Presence.update(
-      self(),
-      socket.assigns.room_id,
-      socket.id,
+    presence_update(
+      socket,
       %{name: socket.assigns.name, number: nil}
     )
 
