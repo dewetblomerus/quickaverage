@@ -33,17 +33,23 @@ defmodule QuickAverageWeb.AverageLive do
   end
 
   @impl true
-  def handle_event("update", %{"name" => name, "number" => number}, socket) do
+  def handle_event(
+        "update",
+        %{"name" => name, "number" => input_number},
+        socket
+      ) do
     if name != socket.assigns.name do
       send(self(), %{store_name: name})
     end
 
+    number = LiveState.parse_number(input_number)
+
     presence_update(
       socket,
-      %{name: name, number: parse_number(number)}
+      %{name: name, number: number}
     )
 
-    {:noreply, assign(socket, name: name, number: parse_number(number))}
+    {:noreply, assign(socket, name: name, number: number)}
   end
 
   def handle_event(
@@ -108,13 +114,6 @@ defmodule QuickAverageWeb.AverageLive do
       socket.id,
       meta
     )
-  end
-
-  def parse_number(number_input) do
-    case Float.parse(number_input) do
-      {num, ""} -> Float.round(num, 2)
-      _ -> nil
-    end
   end
 
   def reveal?(presence_list) do

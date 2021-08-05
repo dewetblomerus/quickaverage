@@ -28,4 +28,11 @@ defmodule QuickAverageWeb.AverageLive.State do
     (Enum.sum(numbers) / Enum.count(numbers))
     |> Float.round(2)
   end
+
+  def parse_number(number_input) do
+    case Float.parse(number_input) do
+      {num, ""} -> Float.round(num, 2)
+      _ -> nil
+    end
+  end
 end

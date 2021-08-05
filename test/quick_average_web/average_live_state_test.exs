@@ -88,4 +88,18 @@ defmodule QuickAverageWeb.AverageLive.StateTest do
       assert State.reveal_numbers?(@users_waiting) == false
     end
   end
+
+  describe("parse_number/1") do
+    test "parse a number from a string" do
+      assert State.parse_number("3") == 3
+    end
+
+    test "parse non numbers as nil" do
+      assert State.parse_number("word") == nil
+    end
+
+    test "round floats with large decimals to 2 decimal points" do
+      assert State.parse_number("7.777") == 7.78
+    end
+  end
 end
