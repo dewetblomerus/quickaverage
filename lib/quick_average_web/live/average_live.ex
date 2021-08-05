@@ -26,7 +26,7 @@ defmodule QuickAverageWeb.AverageLive do
        name: "",
        number: nil,
        presence_list: presence_list,
-       reveal_reached: false,
+       reveal: false,
        reveal_clicked: false,
        room_id: room_id
      )}
@@ -116,7 +116,7 @@ defmodule QuickAverageWeb.AverageLive do
     )
   end
 
-  def reveal?(presence_list) do
+  def all_submitted?(presence_list) do
     presence_list
     |> LiveState.list_users()
     |> LiveState.reveal_numbers?()
@@ -136,7 +136,7 @@ defmodule QuickAverageWeb.AverageLive do
      assign(socket,
        average: LiveState.average(presence_list),
        presence_list: presence_list,
-       reveal_reached: reveal?(presence_list) || socket.assigns.reveal_clicked
+       reveal: all_submitted?(presence_list) || socket.assigns.reveal_clicked
      )}
   end
 
@@ -164,7 +164,7 @@ defmodule QuickAverageWeb.AverageLive do
   end
 
   def handle_info("reveal", socket) do
-    {:noreply, assign(socket, reveal_clicked: true, reveal_reached: true)}
+    {:noreply, assign(socket, reveal_clicked: true, reveal: true)}
   end
 
   # template helpers
