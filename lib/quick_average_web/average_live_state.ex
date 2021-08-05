@@ -35,4 +35,11 @@ defmodule QuickAverageWeb.AverageLive.State do
       _ -> nil
     end
   end
+
+  def integerize(number) do
+    case Float.ratio(number) do
+      {int, 1} -> int
+      _ -> number
+    end
+  end
 end

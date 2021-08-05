@@ -102,4 +102,14 @@ defmodule QuickAverageWeb.AverageLive.StateTest do
       assert State.parse_number("7.777") == 7.78
     end
   end
+
+  describe("integerize/1") do
+    test "floats remain as floats" do
+      assert State.integerize(8.3) == 8.3
+    end
+
+    test "round floats become integers" do
+      assert State.integerize(8.0) == 8
+    end
+  end
 end

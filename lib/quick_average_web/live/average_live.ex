@@ -177,12 +177,7 @@ defmodule QuickAverageWeb.AverageLive do
 
   defp display_number(_, false), do: "Hidden"
 
-  defp display_number(number, true) do
-    case Float.ratio(number) do
-      {int, 1} -> int
-      _ -> number
-    end
-  end
+  defp display_number(number, true), do: LiveState.integerize(number)
 
   defp display_name(text, opts \\ []) do
     max_length = opts[:max_length] || 25
