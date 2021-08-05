@@ -19,7 +19,7 @@
     </form>
   </div>
 
-  <h1 class="text-r text-3xl m-3">Average: <%= display_average(@average, @reveal) %></h1>
+  <h1 class="text-r text-3xl m-3">Average: <%= display_average(@average, @reveal_reached) %></h1>
 
   <%= if @admin do %>
     <button phx-click="clear_clicked" class="bg-blue-500 hover:bg-blue-700 text-gray-100 py-1 px-4 border border-gray-400 rounded-lg mb-2" >
@@ -46,7 +46,7 @@
           <%= for user <- LiveState.list_users(@presence_list) do %>
             <tr class="bg-emerald-200">
               <td class="text-left max-w-xs pr-2"> <%= display_name(user.name) %> </td>
-              <td class="text-right"> <%= display_number(user.number, @reveal) %> </td>
+              <td class="text-right"> <%= display_number(user.number, @reveal_reached) %> </td>
             </tr>
           <% end %>
         </tbody>
