@@ -179,9 +179,9 @@ defmodule QuickAverageWeb.AverageLive do
 
   defp display_number(number, true), do: LiveState.integerize(number)
 
-  defp display_name(text, opts \\ []) do
-    max_length = opts[:max_length] || 25
-    omission = opts[:omission] || "..."
+  defp display_name(text) do
+    max_length = 25
+    omission = "..."
 
     cond do
       not String.valid?(text) ->
