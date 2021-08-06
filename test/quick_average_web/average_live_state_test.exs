@@ -135,4 +135,15 @@ defmodule QuickAverageWeb.AverageLive.StateTest do
       assert State.all_submitted?(@some_numbers_missing) == false
     end
   end
+
+  describe("parse_name/1") do
+    test "does not change regular names" do
+      assert State.parse_name("De Wet Blomerus") == "De Wet Blomerus"
+    end
+
+    test "truncates long names" do
+      assert State.parse_name("Kristian De Wet Blomerus The 2nd") ==
+               "Kristian De Wet Blomer..."
+    end
+  end
 end

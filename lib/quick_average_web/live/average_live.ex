@@ -35,9 +35,11 @@ defmodule QuickAverageWeb.AverageLive do
   @impl true
   def handle_event(
         "update",
-        %{"name" => name, "number" => input_number},
+        %{"name" => input_name, "number" => input_number},
         socket
       ) do
+    name = LiveState.parse_name(input_name)
+
     if name != socket.assigns.name do
       send(self(), %{store_name: name})
     end
@@ -153,22 +155,4 @@ defmodule QuickAverageWeb.AverageLive do
   defp display_number(_, false), do: "Hidden"
 
   defp display_number(number, true), do: LiveState.integerize(number)
-
-  defp display_name(text) do
-    max_length = 25
-    omission = "..."
-
-    cond do
-      not String.valid?(text) ->
-        text
-
-      String.length(text) < max_length ->
-        text
-
-      true ->
-        length_with_omission = max_length - String.length(omission)
-
-        "#{String.slice(text, 0, length_with_omission)}#{omission}"
-    end
-  end
 end

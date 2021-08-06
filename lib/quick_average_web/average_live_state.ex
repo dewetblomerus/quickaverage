@@ -45,4 +45,22 @@ defmodule QuickAverageWeb.AverageLive.State do
       number
     end)
   end
+
+  def parse_name(name) do
+    max_length = 25
+    omission = "..."
+
+    cond do
+      not String.valid?(name) ->
+        "Bob"
+
+      String.length(name) < max_length ->
+        name
+
+      true ->
+        length_with_omission = max_length - String.length(omission)
+
+        "#{String.slice(name, 0, length_with_omission)}#{omission}"
+    end
+  end
 end
