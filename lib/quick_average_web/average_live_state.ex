@@ -16,10 +16,6 @@ defmodule QuickAverageWeb.AverageLive.State do
     calculate_average(numbers)
   end
 
-  def reveal_numbers?(users_list) do
-    Enum.all?(users_list, fn user -> user.number end)
-  end
-
   defp calculate_average([]) do
     nil
   end
@@ -44,8 +40,9 @@ defmodule QuickAverageWeb.AverageLive.State do
   end
 
   def all_submitted?(presence_list) do
-    presence_list
-    |> list_users()
-    |> reveal_numbers?()
+    Enum.all?(presence_list, fn presence ->
+      {_, %{metas: [%{number: number}]}} = presence
+      number
+    end)
   end
 end

@@ -56,17 +56,6 @@ defmodule QuickAverageWeb.AverageLive.StateTest do
     }
   ]
 
-  @users_waiting [
-    %{
-      name: "Darth",
-      number: 6.0
-    },
-    %{
-      name: "De Wet",
-      number: nil
-    }
-  ]
-
   describe("list_users/1") do
     test "lists the users" do
       assert State.list_users(@presence_list) == @users_list
@@ -76,16 +65,6 @@ defmodule QuickAverageWeb.AverageLive.StateTest do
   describe("average/1") do
     test "lists the users" do
       assert State.average(@presence_list) == 8.33
-    end
-  end
-
-  describe("show_numbers?/1") do
-    test "reveal numbers if everyone submitted" do
-      assert State.reveal_numbers?(@users_list) == true
-    end
-
-    test "hide numbers if we are waiting for numbers" do
-      assert State.reveal_numbers?(@users_waiting) == false
     end
   end
 

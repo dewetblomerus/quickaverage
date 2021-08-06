@@ -104,8 +104,8 @@ defmodule QuickAverageWeb.AverageLive do
     presence_list = PresenceState.patch(socket.assigns.presence_list, payload)
 
     reveal =
-      LiveState.all_submitted?(presence_list) ||
-        socket.assigns.reveal_clicked
+      socket.assigns.reveal_clicked ||
+        LiveState.all_submitted?(presence_list)
 
     {:noreply,
      assign(socket,
