@@ -158,4 +158,17 @@ defmodule QuickAverageWeb.AverageLive.StateTest do
                "Kristian De Wet Blomer..."
     end
   end
+
+  describe("will_change?/2") do
+    @assigns %{name: "De Wet", number: 10, admin: true}
+    @subset %{name: "De Wet", number: 10}
+    test "false if values are the same" do
+      assert State.will_change?(@assigns, @subset) == false
+    end
+
+    @subset %{name: "De Wet", number: 7}
+    test "true if there are changed values" do
+      assert State.will_change?(@assigns, @subset) == true
+    end
+  end
 end

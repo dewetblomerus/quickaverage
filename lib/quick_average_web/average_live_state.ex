@@ -78,4 +78,9 @@ defmodule QuickAverageWeb.AverageLive.State do
         "#{String.slice(name, 0, length_with_omission)}#{omission}"
     end
   end
+
+  def will_change?(current, changes) do
+    subset = Map.take(current, Map.keys(changes))
+    !Map.equal?(subset, changes)
+  end
 end
