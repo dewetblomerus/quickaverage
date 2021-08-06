@@ -44,7 +44,7 @@ defmodule QuickAverageWeb.AverageLive do
 
     number = LiveState.parse_number(input_number)
 
-    presence_update(
+    Presence.room_update(
       socket,
       %{name: name, number: number}
     )
@@ -68,7 +68,7 @@ defmodule QuickAverageWeb.AverageLive do
       )
 
     if name do
-      presence_update(
+      Presence.room_update(
         socket,
         %{name: name, number: nil}
       )
@@ -107,15 +107,6 @@ defmodule QuickAverageWeb.AverageLive do
     {:noreply, socket}
   end
 
-  def presence_update(socket, meta) do
-    Presence.update(
-      self(),
-      socket.assigns.room_id,
-      socket.id,
-      meta
-    )
-  end
-
   @impl true
   def handle_info(
         %Phoenix.Socket.Broadcast{
@@ -142,7 +133,7 @@ defmodule QuickAverageWeb.AverageLive do
   def handle_info("clear", socket) do
     send(self(), "clear_number_front")
 
-    presence_update(
+    Presence.room_update(
       socket,
       %{name: socket.assigns.name, number: nil}
     )
