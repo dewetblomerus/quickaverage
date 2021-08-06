@@ -11,4 +11,14 @@ defmodule QuickAverageWeb.Presence do
       meta
     )
   end
+
+  def pubsub_broadcast(socket, message) do
+    if socket.assigns.admin do
+      Phoenix.PubSub.broadcast(
+        QuickAverage.PubSub,
+        socket.assigns.room_id,
+        message
+      )
+    end
+  end
 end

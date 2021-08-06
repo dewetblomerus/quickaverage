@@ -84,26 +84,12 @@ defmodule QuickAverageWeb.AverageLive do
   end
 
   def handle_event("clear_clicked", _, socket) do
-    if socket.assigns.admin do
-      PubSub.broadcast(
-        QuickAverage.PubSub,
-        socket.assigns.room_id,
-        "clear"
-      )
-    end
-
+    Presence.pubsub_broadcast(socket, "clear")
     {:noreply, socket}
   end
 
   def handle_event("reveal", _, socket) do
-    if socket.assigns.admin do
-      PubSub.broadcast(
-        QuickAverage.PubSub,
-        socket.assigns.room_id,
-        "reveal"
-      )
-    end
-
+    Presence.pubsub_broadcast(socket, "reveal")
     {:noreply, socket}
   end
 
