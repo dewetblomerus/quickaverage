@@ -112,4 +112,48 @@ defmodule QuickAverageWeb.AverageLive.StateTest do
       assert State.integerize(8.0) == 8
     end
   end
+
+  @all_numbers_present %{
+    "phx-FpFUEe4C66uTTgHH" => %{
+      metas: [
+        %{
+          number: 6.0
+        }
+      ]
+    },
+    "phx-FpFUEgWEsnjpeAFB" => %{
+      metas: [
+        %{
+          number: 10.0
+        }
+      ]
+    }
+  }
+
+  describe("all_submitted?/1") do
+    test "true when all numbers present" do
+      assert State.all_submitted?(@all_numbers_present) == true
+    end
+
+    @some_numbers_missing %{
+      "phx-FpFUEe4C66uTTgHH" => %{
+        metas: [
+          %{
+            number: 6.0
+          }
+        ]
+      },
+      "phx-FpFUEgWEsnjpeAFB" => %{
+        metas: [
+          %{
+            number: nil
+          }
+        ]
+      }
+    }
+
+    test "true when some numbers missing" do
+      assert State.all_submitted?(@some_numbers_missing) == false
+    end
+  end
 end

@@ -42,4 +42,10 @@ defmodule QuickAverageWeb.AverageLive.State do
       _ -> number
     end
   end
+
+  def all_submitted?(presence_list) do
+    presence_list
+    |> list_users()
+    |> reveal_numbers?()
+  end
 end

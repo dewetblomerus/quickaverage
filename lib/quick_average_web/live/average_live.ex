@@ -116,12 +116,6 @@ defmodule QuickAverageWeb.AverageLive do
     )
   end
 
-  def all_submitted?(presence_list) do
-    presence_list
-    |> LiveState.list_users()
-    |> LiveState.reveal_numbers?()
-  end
-
   @impl true
   def handle_info(
         %Phoenix.Socket.Broadcast{
@@ -132,11 +126,15 @@ defmodule QuickAverageWeb.AverageLive do
       ) do
     presence_list = PresenceState.patch(socket.assigns.presence_list, payload)
 
+    reveal =
+      LiveState.all_submitted?(presence_list) ||
+        socket.assigns.reveal_clicked
+
     {:noreply,
      assign(socket,
        average: LiveState.average(presence_list),
        presence_list: presence_list,
-       reveal: all_submitted?(presence_list) || socket.assigns.reveal_clicked
+       reveal: reveal
      )}
   end
 
