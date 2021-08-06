@@ -16,10 +16,6 @@ defmodule QuickAverageWeb.AverageLive.State do
     calculate_average(numbers)
   end
 
-  def reveal_numbers?(users_list) do
-    Enum.all?(users_list, fn user -> user.number end)
-  end
-
   defp calculate_average([]) do
     nil
   end
@@ -27,5 +23,26 @@ defmodule QuickAverageWeb.AverageLive.State do
   defp calculate_average(numbers) do
     (Enum.sum(numbers) / Enum.count(numbers))
     |> Float.round(2)
+  end
+
+  def parse_number(number_input) do
+    case Float.parse(number_input) do
+      {num, ""} -> Float.round(num, 2)
+      _ -> nil
+    end
+  end
+
+  def integerize(number) do
+    case Float.ratio(number) do
+      {int, 1} -> int
+      _ -> number
+    end
+  end
+
+  def all_submitted?(presence_list) do
+    Enum.all?(presence_list, fn presence ->
+      {_, %{metas: [%{number: number}]}} = presence
+      number
+    end)
   end
 end

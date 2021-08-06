@@ -33,19 +33,23 @@ defmodule QuickAverageWeb.AverageLive do
   end
 
   @impl true
-  def handle_event("update", %{"name" => name, "number" => number}, socket) do
+  def handle_event(
+        "update",
+        %{"name" => name, "number" => input_number},
+        socket
+      ) do
     if name != socket.assigns.name do
       send(self(), %{store_name: name})
     end
 
-    Presence.update(
-      self(),
-      socket.assigns.room_id,
-      socket.id,
-      %{name: name, number: parse_number(number)}
+    number = LiveState.parse_number(input_number)
+
+    Presence.room_update(
+      socket,
+      %{name: name, number: number}
     )
 
-    {:noreply, assign(socket, name: name, number: parse_number(number))}
+    {:noreply, assign(socket, name: name, number: number)}
   end
 
   def handle_event(
@@ -64,10 +68,8 @@ defmodule QuickAverageWeb.AverageLive do
       )
 
     if name do
-      Presence.update(
-        self(),
-        socket.assigns.room_id,
-        socket.id,
+      Presence.room_update(
+        socket,
         %{name: name, number: nil}
       )
     end
@@ -82,40 +84,13 @@ defmodule QuickAverageWeb.AverageLive do
   end
 
   def handle_event("clear_clicked", _, socket) do
-    if socket.assigns.admin do
-      PubSub.broadcast(
-        QuickAverage.PubSub,
-        socket.assigns.room_id,
-        "clear"
-      )
-    end
-
+    Presence.pubsub_broadcast(socket, "clear")
     {:noreply, socket}
   end
 
   def handle_event("reveal", _, socket) do
-    if socket.assigns.admin do
-      PubSub.broadcast(
-        QuickAverage.PubSub,
-        socket.assigns.room_id,
-        "reveal"
-      )
-    end
-
+    Presence.pubsub_broadcast(socket, "reveal")
     {:noreply, socket}
-  end
-
-  def parse_number(number_input) do
-    case Float.parse(number_input) do
-      {num, ""} -> Float.round(num, 2)
-      _ -> nil
-    end
-  end
-
-  def reveal?(presence_list) do
-    presence_list
-    |> LiveState.list_users()
-    |> LiveState.reveal_numbers?()
   end
 
   @impl true
@@ -128,11 +103,15 @@ defmodule QuickAverageWeb.AverageLive do
       ) do
     presence_list = PresenceState.patch(socket.assigns.presence_list, payload)
 
+    reveal =
+      socket.assigns.reveal_clicked ||
+        LiveState.all_submitted?(presence_list)
+
     {:noreply,
      assign(socket,
        average: LiveState.average(presence_list),
        presence_list: presence_list,
-       reveal: reveal?(presence_list) || socket.assigns.reveal_clicked
+       reveal: reveal
      )}
   end
 
@@ -140,10 +119,8 @@ defmodule QuickAverageWeb.AverageLive do
   def handle_info("clear", socket) do
     send(self(), "clear_number_front")
 
-    Presence.update(
-      self(),
-      socket.assigns.room_id,
-      socket.id,
+    Presence.room_update(
+      socket,
       %{name: socket.assigns.name, number: nil}
     )
 
@@ -175,16 +152,11 @@ defmodule QuickAverageWeb.AverageLive do
 
   defp display_number(_, false), do: "Hidden"
 
-  defp display_number(number, true) do
-    case Float.ratio(number) do
-      {int, 1} -> int
-      _ -> number
-    end
-  end
+  defp display_number(number, true), do: LiveState.integerize(number)
 
-  defp display_name(text, opts \\ []) do
-    max_length = opts[:max_length] || 25
-    omission = opts[:omission] || "..."
+  defp display_name(text) do
+    max_length = 25
+    omission = "..."
 
     cond do
       not String.valid?(text) ->
