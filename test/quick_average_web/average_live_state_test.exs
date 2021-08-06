@@ -80,6 +80,14 @@ defmodule QuickAverageWeb.AverageLive.StateTest do
     test "round floats with large decimals to 2 decimal points" do
       assert State.parse_number("7.777") == 7.78
     end
+
+    test "limit large numbers to one million" do
+      assert State.parse_number("999999999") == 1_000_000
+    end
+
+    test "limit large negative numbers to negative one million" do
+      assert State.parse_number("-999999999") == -1_000_000
+    end
   end
 
   describe("integerize/1") do
@@ -89,6 +97,10 @@ defmodule QuickAverageWeb.AverageLive.StateTest do
 
     test "round floats become integers" do
       assert State.integerize(8.0) == 8
+    end
+
+    test "integers remain integers" do
+      assert State.integerize(8) == 8
     end
   end
 

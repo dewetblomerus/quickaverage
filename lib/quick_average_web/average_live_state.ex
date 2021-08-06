@@ -27,9 +27,24 @@ defmodule QuickAverageWeb.AverageLive.State do
 
   def parse_number(number_input) do
     case Float.parse(number_input) do
-      {num, ""} -> Float.round(num, 2)
-      _ -> nil
+      {num, ""} ->
+        Float.round(num, 2) |> clip_num()
+
+      _ ->
+        nil
     end
+  end
+
+  def clip_num(number) do
+    case number do
+      num when num > 1_000_000 -> 1_000_000
+      num when num < -1_000_000 -> -1_000_000
+      _ -> number
+    end
+  end
+
+  def integerize(number) when is_integer(number) do
+    number
   end
 
   def integerize(number) do
