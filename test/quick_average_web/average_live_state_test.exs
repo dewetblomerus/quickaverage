@@ -35,33 +35,6 @@ defmodule QuickAverageWeb.AverageLive.StateTest do
     }
   }
 
-  @users_list [
-    %{
-      name: "Darth",
-      number: 6.0,
-      phx_ref: "FpFUFvXLJpz5pAOF",
-      phx_ref_prev: "FpFUFl0T65P5pAeI"
-    },
-    %{
-      name: "Luke",
-      number: 10.0,
-      phx_ref: "FpFUFZZeaaj5pASE",
-      phx_ref_prev: "FpFUFWgobQ35pALH"
-    },
-    %{
-      name: "De Wet",
-      number: 9.0,
-      phx_ref: "FpFUFJ9yrlL5pAaD",
-      phx_ref_prev: "FpFUFGgOMyb5pAZD"
-    }
-  ]
-
-  describe("list_users/1") do
-    test "lists the users" do
-      assert State.list_users(@presence_list) == @users_list
-    end
-  end
-
   describe("average/1") do
     test "lists the users" do
       assert State.average(@presence_list) == 8.33
@@ -70,7 +43,7 @@ defmodule QuickAverageWeb.AverageLive.StateTest do
 
   describe("parse_number/1") do
     test "parse a number from a string" do
-      assert State.parse_number("3") == 3
+      assert State.parse_number("3") === 3
     end
 
     test "parse non numbers as nil" do
@@ -156,6 +129,19 @@ defmodule QuickAverageWeb.AverageLive.StateTest do
     test "truncates long names" do
       assert State.parse_name("Kristian De Wet Blomerus The 2nd") ==
                "Kristian De Wet Blomer..."
+    end
+  end
+
+  describe("will_change?/2") do
+    @assigns %{name: "De Wet", number: 10, admin: true}
+    @subset %{name: "De Wet", number: 10}
+    test "false if values are the same" do
+      assert State.will_change?(@assigns, @subset) == false
+    end
+
+    @subset %{name: "De Wet", number: 7}
+    test "true if there are changed values" do
+      assert State.will_change?(@assigns, @subset) == true
     end
   end
 end

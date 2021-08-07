@@ -6,7 +6,7 @@ defmodule QuickAverageWeb.AverageLive do
   alias QuickAverageWeb.Presence
   alias QuickAverageWeb.Presence.State, as: PresenceState
 
-  @impl true
+  @impl Phoenix.LiveView
   def mount(%{"room_id" => room_id}, _session, socket) do
     QuickAverageWeb.Endpoint.subscribe(room_id)
 
@@ -32,7 +32,7 @@ defmodule QuickAverageWeb.AverageLive do
      )}
   end
 
-  @impl true
+  @impl Phoenix.LiveView
   def handle_event(
         "update",
         %{"name" => input_name, "number" => input_number},
@@ -46,14 +46,19 @@ defmodule QuickAverageWeb.AverageLive do
 
     number = LiveState.parse_number(input_number)
 
-    Presence.room_update(
-      socket,
-      %{name: name, number: number}
-    )
+    new_assigns = %{name: name, number: number}
+
+    if LiveState.will_change?(socket.assigns, new_assigns) do
+      Presence.room_update(
+        socket,
+        new_assigns
+      )
+    end
 
     {:noreply, assign(socket, name: name, number: number)}
   end
 
+  @impl Phoenix.LiveView
   def handle_event(
         "restore_user",
         %{"admin_state" => admin_state_token, "name" => name},
@@ -85,11 +90,13 @@ defmodule QuickAverageWeb.AverageLive do
     {:noreply, assign(socket, admin: admin, name: name)}
   end
 
+  @impl Phoenix.LiveView
   def handle_event("clear_clicked", _, socket) do
     Presence.pubsub_broadcast(socket, "clear")
     {:noreply, socket}
   end
 
+  @impl Phoenix.LiveView
   def handle_event("reveal", _, socket) do
     Presence.pubsub_broadcast(socket, "reveal")
     {:noreply, socket}
