@@ -8,8 +8,13 @@ defmodule QuickAverageWeb.Endpoint do
       # Note that native client is very immature. If you want a more stable behaviour, you can
       # provide `:certbot` instead. Note that in this case certbot needs to be installed on the
       # host machine.
-      client: :certbot,
-      domains: ["quickaverage.com", "www.quickaverage.com"],
+      client: :native,
+      domains: [
+        "av.dev",
+        "www.av.dev",
+        "quickaverage.com",
+        "www.quickaverage.com"
+      ],
       emails: ["dewet@blomerus.org"],
 
       # By default the certs will be stored in tmp/site_encrypt_db, which is convenient for
