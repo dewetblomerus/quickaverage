@@ -70,7 +70,7 @@ defmodule QuickAverageWeb.AverageLive.StateTest do
 
   describe("parse_number/1") do
     test "parse a number from a string" do
-      assert State.parse_number("3") == 3
+      assert State.parse_number("3") === 3
     end
 
     test "parse non numbers as nil" do
