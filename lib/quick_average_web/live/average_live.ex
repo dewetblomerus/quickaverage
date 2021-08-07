@@ -51,7 +51,7 @@ defmodule QuickAverageWeb.AverageLive do
     if LiveState.will_change?(socket.assigns, new_assigns) do
       Presence.room_update(
         socket,
-        %{name: name, number: number}
+        new_assigns
       )
     end
 
