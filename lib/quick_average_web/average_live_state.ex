@@ -28,7 +28,7 @@ defmodule QuickAverageWeb.AverageLive.State do
     end
   end
 
-  def clip_num(number) do
+  defp clip_num(number) do
     case number do
       num when num > 1_000_000 -> 1_000_000
       num when num < -1_000_000 -> -1_000_000
@@ -40,7 +40,7 @@ defmodule QuickAverageWeb.AverageLive.State do
     number
   end
 
-  def integerize(number) do
+  def integerize(number) when is_float(number) do
     case Float.ratio(number) do
       {int, 1} -> int
       _ -> number
