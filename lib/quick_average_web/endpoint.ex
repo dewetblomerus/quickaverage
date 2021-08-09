@@ -39,7 +39,7 @@ defmodule QuickAverageWeb.Endpoint do
           "www.av.dev"
         ]
 
-      :prod ->
+      _ ->
         [
           "quickaverage.com",
           "www.quickaverage.com"
