@@ -1,7 +1,6 @@
 defmodule QuickAverageWeb.AverageLive do
   require IEx
   use QuickAverageWeb, :live_view
-  alias Phoenix.PubSub
   alias QuickAverageWeb.AverageLive.State, as: LiveState
   alias QuickAverageWeb.Presence
   alias QuickAverageWeb.Presence.State, as: PresenceState
