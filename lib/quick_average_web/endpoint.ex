@@ -31,20 +31,13 @@ defmodule QuickAverageWeb.Endpoint do
     )
   end
 
-  def domains() do
-    case Mix.env() do
-      :dev ->
-        [
-          "av.dev",
-          "www.av.dev"
-        ]
+  def domains do
+    host = System.get_env("HOST", "av.dev")
 
-      _ ->
-        [
-          "quickaverage.com",
-          "www.quickaverage.com"
-        ]
-    end
+    [
+      host,
+      "www.#{host}"
+    ]
   end
 
   @impl Phoenix.Endpoint
