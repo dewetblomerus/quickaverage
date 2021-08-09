@@ -9,12 +9,7 @@ defmodule QuickAverageWeb.Endpoint do
       # provide `:certbot` instead. Note that in this case certbot needs to be installed on the
       # host machine.
       client: :native,
-      domains: [
-        "av.dev",
-        "www.av.dev",
-        "quickaverage.com",
-        "www.quickaverage.com"
-      ],
+      domains: domains(),
       emails: ["dewet@blomerus.org"],
 
       # By default the certs will be stored in tmp/site_encrypt_db, which is convenient for
@@ -34,6 +29,22 @@ defmodule QuickAverageWeb.Endpoint do
           "production" -> "https://acme-v02.api.letsencrypt.org/directory"
         end
     )
+  end
+
+  def domains() do
+    case Mix.env() do
+      :dev ->
+        [
+          "av.dev",
+          "www.av.dev"
+        ]
+
+      :prod ->
+        [
+          "quickaverage.com",
+          "www.quickaverage.com"
+        ]
+    end
   end
 
   @impl Phoenix.Endpoint
