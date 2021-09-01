@@ -1,20 +1,20 @@
 <section>
-  <div id="hooker" phx-hook="GetStorage">
-  <div id="hooker" phx-hook="SetStorage">
-  <div id="hooker" phx-hook="ClearNumber">
+  <div id="hooker" phx-hook="GetStorage"></div>
+  <div id="hooker" phx-hook="SetStorage"></div>
+  <div id="hooker" phx-hook="ClearNumber"></div>
   <div class="w-full max-w-xs m-auto">
     <form phx-change="update" phx-submit="find-average" class="bg-white border  rounded-lg px-8 pt-6 pb-8 mb-4">
       <div class="mb-4">
         <label class="block text-gray-700 text-sm mb-1" for="name">
           Name
         </label>
-        <input type="text" name="name" value="<%= @name %>" phx-debounce="200" placeholder="Name" autocomplete="off" id="name" class="appearance-none border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" >
+        <input type="text" name="name" value={@name} phx-debounce="200" placeholder="Name" autocomplete="off" id="name" class="appearance-none border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" >
       </div>
       <div class="mb-4">
         <label class="block text-gray-700 text-sm mb-1" for="number">
           Number
         </label>
-        <input type="text" name="number" value="<%= @number %>" phx-debounce="200" placeholder="Number" autocomplete="off" id="number" class="appearance-none border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" >
+        <input type="text" name="number" value={@number} phx-debounce="200" placeholder="Number" autocomplete="off" id="number" class="appearance-none border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" >
       </div>
     </form>
   </div>
