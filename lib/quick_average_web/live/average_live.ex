@@ -109,7 +109,8 @@ defmodule QuickAverageWeb.AverageLive do
         },
         socket
       ) do
-    presence_list = PresenceState.patch(socket.assigns.presence_list, payload)
+    presence_list =
+      PresenceState.sync_diff(socket.assigns.presence_list, payload)
 
     reveal =
       socket.assigns.reveal_clicked ||
