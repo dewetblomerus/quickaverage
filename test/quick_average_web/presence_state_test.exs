@@ -72,19 +72,19 @@ defmodule QuickAverageWeb.Presence.StateTest do
     }
   }
 
-  describe("patch/2") do
+  describe("sync_diff/2") do
     test "adds a new user" do
-      assert State.patch(@presence_list, @create) ==
+      assert State.sync_diff(@presence_list, @create) ==
                Map.merge(@presence_list, @create.joins)
     end
 
     test "updates a user" do
-      assert State.patch(@presence_list, @update) ==
+      assert State.sync_diff(@presence_list, @update) ==
                Map.merge(@presence_list, @update.joins)
     end
 
     test "deletes a user" do
-      assert State.patch(@presence_list, @delete) ==
+      assert State.sync_diff(@presence_list, @delete) ==
                @after_delete
     end
   end
