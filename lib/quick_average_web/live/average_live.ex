@@ -48,7 +48,7 @@ defmodule QuickAverageWeb.AverageLive do
     new_assigns = %{name: name, number: number}
 
     if LiveState.will_change?(socket.assigns, new_assigns) do
-      Presence.room_update(
+      room_update(
         socket,
         new_assigns
       )
@@ -74,7 +74,7 @@ defmodule QuickAverageWeb.AverageLive do
       )
 
     if name do
-      Presence.room_update(
+      room_update(
         socket,
         %{name: name, number: nil}
       )
@@ -90,14 +90,11 @@ defmodule QuickAverageWeb.AverageLive do
   end
 
   @impl Phoenix.LiveView
-  def handle_event("clear_clicked", _, socket) do
-    Presence.pubsub_broadcast(socket, "clear")
-    {:noreply, socket}
-  end
+  def handle_event(event, _, socket) when event in ["clear", "reveal"] do
+    if socket.assigns.admin do
+      Presence.pubsub_broadcast(socket.assigns.room_id, event)
+    end
 
-  @impl Phoenix.LiveView
-  def handle_event("reveal", _, socket) do
-    Presence.pubsub_broadcast(socket, "reveal")
     {:noreply, socket}
   end
 
@@ -128,7 +125,7 @@ defmodule QuickAverageWeb.AverageLive do
   def handle_info("clear", socket) do
     send(self(), "clear_number_front")
 
-    Presence.room_update(
+    room_update(
       socket,
       %{name: socket.assigns.name, number: nil}
     )
@@ -149,6 +146,15 @@ defmodule QuickAverageWeb.AverageLive do
 
   def handle_info("reveal", socket) do
     {:noreply, assign(socket, reveal_clicked: true, reveal: true)}
+  end
+
+  def room_update(socket, meta) do
+    Presence.update(
+      self(),
+      socket.assigns.room_id,
+      socket.id,
+      meta
+    )
   end
 
   # template helpers
