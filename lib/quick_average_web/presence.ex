@@ -5,15 +5,6 @@ defmodule QuickAverageWeb.Presence do
     otp_app: :quick_average,
     pubsub_server: @pubsub_server
 
-  def room_update(socket, meta) do
-    update(
-      self(),
-      socket.assigns.room_id,
-      socket.id,
-      meta
-    )
-  end
-
   def pubsub_broadcast(topic, message) do
     Phoenix.PubSub.broadcast(
       @pubsub_server,
