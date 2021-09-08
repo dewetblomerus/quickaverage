@@ -90,14 +90,11 @@ defmodule QuickAverageWeb.AverageLive do
   end
 
   @impl Phoenix.LiveView
-  def handle_event("clear_clicked", _, socket) do
-    Presence.pubsub_broadcast(socket, "clear")
-    {:noreply, socket}
-  end
+  def handle_event(event, _, socket) when event in ["clear", "reveal"] do
+    if socket.assigns.admin do
+      Presence.pubsub_broadcast(socket.assigns.room_id, event)
+    end
 
-  @impl Phoenix.LiveView
-  def handle_event("reveal", _, socket) do
-    Presence.pubsub_broadcast(socket, "reveal")
     {:noreply, socket}
   end
 
