@@ -18,9 +18,15 @@ defmodule QuickAverageWeb.AverageLive do
 
     presence_list = Presence.list(room_id)
 
+    is_admin = is_alone?(presence_list)
+
+    if is_admin do
+      send(self(), :set_admin)
+    end
+
     {:ok,
      assign(socket,
-       admin: false,
+       admin: is_admin,
        average: nil,
        name: "",
        number: nil,
@@ -63,16 +69,6 @@ defmodule QuickAverageWeb.AverageLive do
         %{"admin_state" => admin_state_token, "name" => name},
         socket
       ) do
-    admin_string = "#{socket.assigns.room_id}:true"
-
-    admin_state =
-      Phoenix.Token.verify(
-        QuickAverageWeb.Endpoint,
-        "admin state",
-        admin_state_token,
-        max_age: 86_400
-      )
-
     if name do
       room_update(
         socket,
@@ -80,13 +76,11 @@ defmodule QuickAverageWeb.AverageLive do
       )
     end
 
-    admin =
-      case admin_state do
-        {:ok, ^admin_string} -> true
-        _ -> false
-      end
+    is_admin =
+      socket.assigns.admin ||
+        is_admin?(socket.assigns.room_id, admin_state_token)
 
-    {:noreply, assign(socket, admin: admin, name: name)}
+    {:noreply, assign(socket, admin: is_admin, name: name)}
   end
 
   @impl Phoenix.LiveView
@@ -96,6 +90,21 @@ defmodule QuickAverageWeb.AverageLive do
     end
 
     {:noreply, socket}
+  end
+
+  @impl true
+  def handle_info(:set_admin, socket) do
+    admin_state_token =
+      Phoenix.Token.sign(
+        QuickAverageWeb.Endpoint,
+        "admin state",
+        "#{socket.assigns.room_id}:true"
+      )
+
+    {:noreply,
+     push_event(socket, "set_storage", %{
+       admin_state: admin_state_token
+     })}
   end
 
   @impl true
@@ -146,6 +155,27 @@ defmodule QuickAverageWeb.AverageLive do
 
   def handle_info("reveal", socket) do
     {:noreply, assign(socket, reveal_clicked: true, reveal: true)}
+  end
+
+  def is_alone?(presence_list) do
+    Enum.count(presence_list) < 2
+  end
+
+  def is_admin?(room_id, admin_state_token) do
+    admin_string = "#{room_id}:true"
+
+    admin_state =
+      Phoenix.Token.verify(
+        QuickAverageWeb.Endpoint,
+        "admin state",
+        admin_state_token,
+        max_age: 86_400
+      )
+
+    case admin_state do
+      {:ok, ^admin_string} -> true
+      _ -> false
+    end
   end
 
   def room_update(socket, meta) do
