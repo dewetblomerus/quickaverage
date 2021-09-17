@@ -146,7 +146,11 @@ defmodule QuickAverageWeb.AverageLive do
 
     room_update(
       socket,
-      %{name: socket.assigns.name, number: nil}
+      %{
+        name: socket.assigns.name,
+        number: nil,
+        moderator: socket.assigns.moderator
+      }
     )
 
     {:noreply, assign(socket, number: nil, reveal_clicked: false)}

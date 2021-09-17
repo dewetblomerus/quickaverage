@@ -45,10 +45,10 @@
           </tr>
         </thead>
         <tbody>
-          <%= for user <- @presence_list |> LiveState.user_list() do %>
+          <%= for %{name: name, number: number, moderator: moderator} <- @presence_list |> LiveState.user_list() do %>
             <tr class="bg-emerald-200">
-              <td class="text-left max-w-xs pr-2"> <%= user.name %> </td>
-              <td class="text-right"> <%= display_number(user.number, @reveal, user.moderator) %> </td>
+              <td class="text-left max-w-xs pr-2"> <%= name %> </td>
+              <td class="text-right"> <%= display_number(number, @reveal, moderator) %> </td>
             </tr>
           <% end %>
         </tbody>
