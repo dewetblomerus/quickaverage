@@ -16,6 +16,8 @@
         </label>
         <input type="text" name="number" value={@number} phx-debounce="200" placeholder="Number" autocomplete="off" id="number" class="appearance-none border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" >
       </div>
+      <div class="text-red-700">Moderator</div>
+      <%= checkbox(:role, :moderator, value: @moderator) %>
     </form>
   </div>
 
@@ -43,10 +45,10 @@
           </tr>
         </thead>
         <tbody>
-          <%= for {_, %{metas: [%{name: name, number: number}]}} <- @presence_list do %>
+          <%= for user <- @presence_list |> LiveState.user_list() do %>
             <tr class="bg-emerald-200">
-              <td class="text-left max-w-xs pr-2"> <%= name %> </td>
-              <td class="text-right"> <%= display_number(number, @reveal) %> </td>
+              <td class="text-left max-w-xs pr-2"> <%= user.name %> </td>
+              <td class="text-right"> <%= display_number(user.number, @reveal, user.moderator) %> </td>
             </tr>
           <% end %>
         </tbody>

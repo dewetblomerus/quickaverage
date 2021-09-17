@@ -1,21 +1,53 @@
 defmodule QuickAverageWeb.AverageLive.State do
   def average(presence_list) do
-    presence_list |> Map.values() |> average(0, 0)
+    presence_list
+    |> user_list()
+    |> Enum.filter(&user_counted?/1)
+    |> calculate_average()
   end
 
-  defp average([], 0, 0), do: nil
-
-  defp average([], total, length) do
-    (total / length) |> Float.round(2)
+  def all_submitted?(presence_list) do
+    presence_list
+    |> user_list()
+    |> Enum.reject(&moderator?/1)
+    |> Enum.all?(fn user ->
+      Map.get(user, :number)
+    end)
   end
 
-  defp average([%{metas: [%{number: number}]} | tail], total, length)
-       when not is_nil(number) do
-    average(tail, total + number, length + 1)
+  def user_list(presence_list) do
+    presence_list
+    |> Map.values()
+    |> Enum.map(&extract_user/1)
   end
 
-  defp average([_ | tail], total, length) do
-    average(tail, total, length)
+  defp user_counted?(user) do
+    Map.get(user, :number) != nil && !moderator?(user)
+  end
+
+  defp moderator?(user) do
+    Map.get(user, :moderator, false)
+  end
+
+  defp calculate_average([]) do
+    nil
+  end
+
+  defp calculate_average(user_list) do
+    count = Enum.count(user_list)
+
+    total =
+      Enum.reduce(user_list, 0, fn user, acc -> Map.get(user, :number) + acc end)
+
+    (total / count) |> Float.round(2)
+  end
+
+  defp extract_user(%{
+         metas: [
+           %{} = user
+         ]
+       }) do
+    user
   end
 
   def parse_number(number_input) do
@@ -37,13 +69,6 @@ defmodule QuickAverageWeb.AverageLive.State do
       {int, 1} -> int
       _ -> number
     end
-  end
-
-  def all_submitted?(presence_list) do
-    Enum.all?(presence_list, fn presence ->
-      {_, %{metas: [%{number: number}]}} = presence
-      number
-    end)
   end
 
   def parse_name(name) do
