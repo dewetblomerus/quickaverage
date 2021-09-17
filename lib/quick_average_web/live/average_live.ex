@@ -52,7 +52,11 @@ defmodule QuickAverageWeb.AverageLive do
     moderator = Boolean.parse(input_moderator)
 
     if name != socket.assigns.name do
-      send(self(), %{store_name: name})
+      send(self(), %{store_state: %{name: name}})
+    end
+
+    if moderator != socket.assigns.moderator do
+      send(self(), %{store_state: %{moderator: moderator}})
     end
 
     number = LiveState.parse_number(input_number)
@@ -76,21 +80,26 @@ defmodule QuickAverageWeb.AverageLive do
   @impl Phoenix.LiveView
   def handle_event(
         "restore_user",
-        %{"admin_state" => admin_state_token, "name" => name},
+        %{
+          "admin_state" => admin_state_token,
+          "name" => name,
+          "moderator" => state_moderator
+        },
         socket
       ) do
-    if name do
-      room_update(
-        socket,
-        %{name: name, number: nil, moderator: false}
-      )
-    end
+    moderator = Boolean.parse(state_moderator)
+
+    room_update(
+      socket,
+      %{name: name, number: nil, moderator: moderator}
+    )
 
     is_admin =
       socket.assigns.admin ||
         is_admin?(socket.assigns.room_id, admin_state_token)
 
-    {:noreply, assign(socket, admin: is_admin, name: name, moderator: false)}
+    {:noreply,
+     assign(socket, admin: is_admin, name: name, moderator: moderator)}
   end
 
   @impl Phoenix.LiveView
@@ -156,11 +165,8 @@ defmodule QuickAverageWeb.AverageLive do
     {:noreply, assign(socket, number: nil, reveal_clicked: false)}
   end
 
-  def handle_info(%{store_name: name}, socket) do
-    {:noreply,
-     push_event(socket, "set_storage", %{
-       name: name
-     })}
+  def handle_info(%{store_state: state}, socket) do
+    {:noreply, push_event(socket, "set_storage", state)}
   end
 
   def handle_info("clear_number_front", socket) do
