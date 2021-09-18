@@ -1,6 +1,6 @@
 defmodule QuickAverageWeb.AverageLive do
-  require IEx
   use QuickAverageWeb, :live_view
+  alias QuickAverage.Boolean
   alias QuickAverageWeb.AverageLive.State, as: LiveState
   alias QuickAverageWeb.Presence
   alias QuickAverageWeb.Presence.State, as: PresenceState
@@ -13,7 +13,7 @@ defmodule QuickAverageWeb.AverageLive do
       self(),
       room_id,
       socket.id,
-      %{name: "New User", number: nil}
+      %{name: "New User", number: nil, moderator: false}
     )
 
     presence_list = Presence.list(room_id)
@@ -27,6 +27,7 @@ defmodule QuickAverageWeb.AverageLive do
     {:ok,
      assign(socket,
        admin: is_admin,
+       moderator: false,
        average: nil,
        name: "",
        number: nil,
@@ -40,18 +41,31 @@ defmodule QuickAverageWeb.AverageLive do
   @impl Phoenix.LiveView
   def handle_event(
         "update",
-        %{"name" => input_name, "number" => input_number},
+        %{
+          "name" => input_name,
+          "number" => input_number,
+          "role" => %{"moderator" => input_moderator}
+        },
         socket
       ) do
     name = LiveState.parse_name(input_name)
+    moderator = Boolean.parse(input_moderator)
 
     if name != socket.assigns.name do
-      send(self(), %{store_name: name})
+      send(self(), %{store_state: %{name: name}})
+    end
+
+    if moderator != socket.assigns.moderator do
+      send(self(), %{store_state: %{moderator: moderator}})
     end
 
     number = LiveState.parse_number(input_number)
 
-    new_assigns = %{name: name, number: number}
+    new_assigns = %{
+      name: name,
+      number: number,
+      moderator: moderator
+    }
 
     if LiveState.will_change?(socket.assigns, new_assigns) do
       room_update(
@@ -60,27 +74,32 @@ defmodule QuickAverageWeb.AverageLive do
       )
     end
 
-    {:noreply, assign(socket, name: name, number: number)}
+    {:noreply, assign(socket, name: name, number: number, moderator: moderator)}
   end
 
   @impl Phoenix.LiveView
   def handle_event(
         "restore_user",
-        %{"admin_state" => admin_state_token, "name" => name},
+        %{
+          "admin_state" => admin_state_token,
+          "name" => name,
+          "moderator" => state_moderator
+        },
         socket
       ) do
-    if name do
-      room_update(
-        socket,
-        %{name: name, number: nil}
-      )
-    end
+    moderator = Boolean.parse(state_moderator)
+
+    room_update(
+      socket,
+      %{name: name, number: nil, moderator: moderator}
+    )
 
     is_admin =
       socket.assigns.admin ||
         is_admin?(socket.assigns.room_id, admin_state_token)
 
-    {:noreply, assign(socket, admin: is_admin, name: name)}
+    {:noreply,
+     assign(socket, admin: is_admin, name: name, moderator: moderator)}
   end
 
   @impl Phoenix.LiveView
@@ -136,17 +155,18 @@ defmodule QuickAverageWeb.AverageLive do
 
     room_update(
       socket,
-      %{name: socket.assigns.name, number: nil}
+      %{
+        name: socket.assigns.name,
+        number: nil,
+        moderator: socket.assigns.moderator
+      }
     )
 
     {:noreply, assign(socket, number: nil, reveal_clicked: false)}
   end
 
-  def handle_info(%{store_name: name}, socket) do
-    {:noreply,
-     push_event(socket, "set_storage", %{
-       name: name
-     })}
+  def handle_info(%{store_state: state}, socket) do
+    {:noreply, push_event(socket, "set_storage", state)}
   end
 
   def handle_info("clear_number_front", socket) do
@@ -193,9 +213,16 @@ defmodule QuickAverageWeb.AverageLive do
 
   defp display_average(number, reveal), do: display_number(number, reveal)
 
-  defp display_number(nil, _), do: "Waiting"
+  defp display_number(number, reveal, moderator \\ false)
 
-  defp display_number(_, false), do: "Hidden"
+  defp display_number(_, _, "true"), do: "SHIT"
+  defp display_number(_, _, true), do: "Moderator"
 
-  defp display_number(number, true), do: LiveState.integerize(number)
+  defp display_number(nil, _, _), do: "Waiting"
+
+  defp display_number(_, false, _), do: "Hidden"
+
+  defp display_number(number, true, _) do
+    LiveState.integerize(number)
+  end
 end

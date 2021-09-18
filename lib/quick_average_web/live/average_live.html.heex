@@ -3,7 +3,7 @@
   <div id="hooker" phx-hook="SetStorage"></div>
   <div id="hooker" phx-hook="ClearNumber"></div>
   <div class="w-full max-w-xs m-auto">
-    <form phx-change="update" phx-submit="find-average" class="bg-white border  rounded-lg px-8 pt-6 pb-8 mb-4">
+    <form phx-change="update" phx-submit="find-average" class="bg-white border  rounded-lg px-8 pt-6 pb-2 mb-4">
       <div class="mb-4">
         <label class="block text-gray-700 text-sm mb-1" for="name">
           Name
@@ -15,6 +15,12 @@
           Number
         </label>
         <input type="text" name="number" value={@number} phx-debounce="200" placeholder="Number" autocomplete="off" id="number" class="appearance-none border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" >
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm mb-1" for="number">
+          Moderating
+        </label>
+        <%= checkbox(:role, :moderator, value: @moderator) %>
       </div>
     </form>
   </div>
@@ -43,10 +49,10 @@
           </tr>
         </thead>
         <tbody>
-          <%= for {_, %{metas: [%{name: name, number: number}]}} <- @presence_list do %>
+          <%= for %{name: name, number: number, moderator: moderator} <- @presence_list |> LiveState.user_list() do %>
             <tr class="bg-emerald-200">
               <td class="text-left max-w-xs pr-2"> <%= name %> </td>
-              <td class="text-right"> <%= display_number(number, @reveal) %> </td>
+              <td class="text-right"> <%= display_number(number, @reveal, moderator) %> </td>
             </tr>
           <% end %>
         </tbody>

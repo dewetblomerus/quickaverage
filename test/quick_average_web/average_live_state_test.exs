@@ -6,6 +6,7 @@ defmodule QuickAverageWeb.AverageLive.StateTest do
     "phx-FpFUEe4C66uTTgHH" => %{
       metas: [
         %{
+          moderator: false,
           name: "Darth",
           number: 6.0,
           phx_ref: "FpFUFvXLJpz5pAOF",
@@ -16,6 +17,7 @@ defmodule QuickAverageWeb.AverageLive.StateTest do
     "phx-FpFUEgWEsnjpeAFB" => %{
       metas: [
         %{
+          moderator: false,
           name: "Luke",
           number: 10.0,
           phx_ref: "FpFUFZZeaaj5pASE",
@@ -26,10 +28,22 @@ defmodule QuickAverageWeb.AverageLive.StateTest do
     "phx-FpFUEhHMdytRggOC" => %{
       metas: [
         %{
+          moderator: false,
           name: "De Wet",
           number: 9.0,
           phx_ref: "FpFUFJ9yrlL5pAaD",
           phx_ref_prev: "FpFUFGgOMyb5pAZD"
+        }
+      ]
+    },
+    "phx-FqV4G7Id0zASHQLH" => %{
+      metas: [
+        %{
+          moderator: true,
+          name: "JP",
+          number: 1000,
+          phx_ref: "FqV4M4ciuqfljARF",
+          phx_ref_prev: "FqV4My7TpITljAQF"
         }
       ]
     }
@@ -91,6 +105,17 @@ defmodule QuickAverageWeb.AverageLive.StateTest do
           number: 10.0
         }
       ]
+    },
+    "phx-FqV4G7Id0zASHQLH" => %{
+      metas: [
+        %{
+          moderator: true,
+          name: "JP",
+          number: nil,
+          phx_ref: "FqV4M4ciuqfljARF",
+          phx_ref_prev: "FqV4My7TpITljAQF"
+        }
+      ]
     }
   }
 
@@ -103,21 +128,52 @@ defmodule QuickAverageWeb.AverageLive.StateTest do
       "phx-FpFUEe4C66uTTgHH" => %{
         metas: [
           %{
-            number: 6.0
+            number: 6.0,
+            admin: false
           }
         ]
       },
       "phx-FpFUEgWEsnjpeAFB" => %{
         metas: [
           %{
-            number: nil
+            number: nil,
+            admin: false
           }
         ]
       }
     }
 
-    test "true when some numbers missing" do
+    test "false when some numbers missing" do
       assert State.all_submitted?(@some_numbers_missing) == false
+    end
+
+    @none_submitted %{
+      "phx-FqW4rL6PMfDn5gQI" => %{
+        metas: [
+          %{
+            moderator: false,
+            name: "other",
+            number: nil,
+            phx_ref: "FqW4rRHpnqjljAbI",
+            phx_ref_prev: "FqW4rRGmgvjljAaI"
+          }
+        ]
+      },
+      "phx-FqW4rMfOcZBLhgUI" => %{
+        metas: [
+          %{
+            moderator: false,
+            name: "De Wet",
+            number: nil,
+            phx_ref: "FqW4rR-mFYDljAgF",
+            phx_ref_prev: "FqW4rR92lVjljAJC"
+          }
+        ]
+      }
+    }
+
+    test "false when all numbers missing" do
+      assert State.all_submitted?(@none_submitted) == false
     end
   end
 
