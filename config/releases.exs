@@ -7,6 +7,10 @@ import Config
 http_port = 80
 https_port = 443
 
+config :quick_average,
+  username: System.fetch_env!("ADMIN_USERNAME")
+  password: System.fetch_env!("ADMIN_PASSWORD")
+
 config :quick_average, QuickAverageWeb.Endpoint,
   http: [
     port: http_port,

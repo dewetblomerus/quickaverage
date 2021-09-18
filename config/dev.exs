@@ -1,5 +1,9 @@
 use Mix.Config
 
+config :quick_average,
+  username: "asdf",
+  password: "asdf"
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #

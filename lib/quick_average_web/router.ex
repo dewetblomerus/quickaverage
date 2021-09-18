@@ -1,5 +1,6 @@
 defmodule QuickAverageWeb.Router do
   use QuickAverageWeb, :router
+  import Phoenix.LiveDashboard.Router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -14,13 +15,19 @@ defmodule QuickAverageWeb.Router do
     plug :accepts, ["json"]
   end
 
-  if Mix.env() in [:dev, :test] do
-    import Phoenix.LiveDashboard.Router
+  pipeline :admins_only do
+    plug :admin_basic_auth
+  end
 
-    scope "/" do
-      pipe_through :browser
-      live_dashboard "/dashboard", metrics: QuickAverageWeb.Telemetry
-    end
+  scope "/" do
+    pipe_through [:browser, :admins_only]
+    live_dashboard "/dashboard", metrics: QuickAverageWeb.Telemetry
+  end
+
+  defp admin_basic_auth(conn, _opts) do
+    username = Application.fetch_env!(:quick_average, :username)
+    password = Application.fetch_env!(:quick_average, :password)
+    Plug.BasicAuth.basic_auth(conn, username: username, password: password)
   end
 
   scope "/", QuickAverageWeb do
