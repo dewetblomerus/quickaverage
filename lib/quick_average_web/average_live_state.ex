@@ -44,7 +44,7 @@ defmodule QuickAverageWeb.AverageLive.State do
 
   defp extract_user(%{
          metas: [
-           %{} = user
+           %{} = user | _
          ]
        }) do
     user
