@@ -50,6 +50,8 @@ defmodule QuickAverageWeb.AverageLive.State do
     user
   end
 
+  def parse_number(nil), do: nil
+
   def parse_number(number_input) do
     case Float.parse(number_input) do
       {num, ""} ->
