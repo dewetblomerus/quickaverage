@@ -25,14 +25,14 @@
     </form>
   </div>
 
-  <h1 class="text-r text-3xl m-3">Average: <%= display_average(@average, @reveal) %></h1>
+  <h1 class="text-r text-3xl m-3">Average: <%= display_average(@average, @reveal_by_click || @reveal_by_submission) %></h1>
 
   <%= if @admin do %>
     <button phx-click="clear" class="bg-blue-500 hover:bg-blue-700 text-gray-100 py-1 px-4 border border-gray-400 rounded-lg mb-2" >
       Clear Numbers
     </button>
-    <button phx-click="reveal" class="bg-blue-500 hover:bg-blue-700 text-gray-100 py-1 px-4 border border-gray-400 rounded-lg mb-2" >
-      Reveal
+    <button phx-click="toggle_reveal" disabled={@reveal_by_submission} class={"#{if @reveal_by_submission, do: "bg-gray-400", else: "bg-blue-500 hover:bg-blue-700"}  text-gray-100 py-1 px-4 border border-gray-400 rounded-lg mb-2"} >
+      <%= if @reveal_by_click, do: "Hide", else: "Reveal" %>
     </button>
   <% end %>
 
@@ -52,7 +52,7 @@
           <%= for %{name: name, number: number, moderator: moderator} <- @presence_list |> LiveState.user_list() do %>
             <tr class="bg-emerald-200">
               <td class="text-left max-w-xs pr-2"> <%= name %> </td>
-              <td class="text-right"> <%= display_number(number, @reveal, moderator) %> </td>
+              <td class="text-right"> <%= display_number(number, @reveal_by_click || @reveal_by_submission, moderator) %> </td>
             </tr>
           <% end %>
         </tbody>

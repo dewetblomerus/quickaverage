@@ -32,8 +32,8 @@ defmodule QuickAverageWeb.AverageLive do
        name: "",
        number: nil,
        presence_list: presence_list,
-       reveal: false,
-       reveal_clicked: false,
+       reveal_by_submission: false,
+       reveal_by_click: false,
        room_id: room_id
      )}
   end
@@ -109,7 +109,7 @@ defmodule QuickAverageWeb.AverageLive do
   end
 
   @impl Phoenix.LiveView
-  def handle_event(event, _, socket) when event in ["clear", "reveal"] do
+  def handle_event(event, _, socket) when event in ["clear", "toggle_reveal"] do
     if socket.assigns.admin do
       Presence.pubsub_broadcast(socket.assigns.room_id, event)
     end
@@ -143,15 +143,11 @@ defmodule QuickAverageWeb.AverageLive do
     presence_list =
       PresenceState.sync_diff(socket.assigns.presence_list, payload)
 
-    reveal =
-      socket.assigns.reveal_clicked ||
-        LiveState.all_submitted?(presence_list)
-
     {:noreply,
      assign(socket,
        average: LiveState.average(presence_list),
        presence_list: presence_list,
-       reveal: reveal
+       reveal_by_submission: LiveState.all_submitted?(presence_list)
      )}
   end
 
@@ -168,7 +164,7 @@ defmodule QuickAverageWeb.AverageLive do
       }
     )
 
-    {:noreply, assign(socket, number: nil, reveal_clicked: false)}
+    {:noreply, assign(socket, number: nil, reveal_by_click: false)}
   end
 
   def handle_info(%{store_state: state}, socket) do
@@ -179,8 +175,8 @@ defmodule QuickAverageWeb.AverageLive do
     {:noreply, push_event(socket, "clear_number", %{})}
   end
 
-  def handle_info("reveal", socket) do
-    {:noreply, assign(socket, reveal_clicked: true, reveal: true)}
+  def handle_info("toggle_reveal", socket) do
+    {:noreply, assign(socket, reveal_by_click: !socket.assigns.reveal_by_click)}
   end
 
   def is_alone?(presence_list) do
