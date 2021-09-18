@@ -43,13 +43,19 @@ defmodule QuickAverageWeb.AverageLive do
         "update",
         %{
           "name" => input_name,
-          "number" => input_number,
           "role" => %{"moderator" => input_moderator}
-        },
+        } = payload,
         socket
       ) do
     name = LiveState.parse_name(input_name)
     moderator = Boolean.parse(input_moderator)
+
+    input_number =
+      if moderator do
+        nil
+      else
+        Map.get(payload, "number")
+      end
 
     if name != socket.assigns.name do
       send(self(), %{store_state: %{name: name}})
