@@ -140,6 +140,10 @@ defmodule QuickAverageWeb.AverageLive do
         },
         socket
       ) do
+    :telemetry.execute([:quick_average, :presence], %{
+      event: "presence_diff"
+    })
+
     presence_list =
       PresenceState.sync_diff(socket.assigns.presence_list, payload)
 
