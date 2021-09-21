@@ -34,7 +34,8 @@ defmodule QuickAverageWeb.AverageLive do
        presence_list: presence_list,
        reveal_by_submission: false,
        reveal_by_click: false,
-       room_id: room_id
+       room_id: room_id,
+       debounce: 0
      )}
   end
 
@@ -151,7 +152,8 @@ defmodule QuickAverageWeb.AverageLive do
      assign(socket,
        average: LiveState.average(presence_list),
        presence_list: presence_list,
-       reveal_by_submission: LiveState.all_submitted?(presence_list)
+       reveal_by_submission: LiveState.all_submitted?(presence_list),
+       debounce: debounce()
      )}
   end
 
@@ -181,6 +183,13 @@ defmodule QuickAverageWeb.AverageLive do
 
   def handle_info("toggle_reveal", socket) do
     {:noreply, assign(socket, reveal_by_click: !socket.assigns.reveal_by_click)}
+  end
+
+  def debounce() do
+    {:message_queue_len, queue_length} =
+      Process.info(self(), :message_queue_len)
+
+    min(queue_length * 100, 500)
   end
 
   def is_alone?(presence_list) do
