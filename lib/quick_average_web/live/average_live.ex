@@ -69,9 +69,9 @@ defmodule QuickAverageWeb.AverageLive do
     number = LiveState.parse_number(input_number)
 
     new_assigns = %{
+      moderator: moderator,
       name: name,
-      number: number,
-      moderator: moderator
+      number: number
     }
 
     if LiveState.will_change?(socket.assigns, new_assigns) do
@@ -81,7 +81,14 @@ defmodule QuickAverageWeb.AverageLive do
       )
     end
 
-    {:noreply, assign(socket, name: name, number: number, moderator: moderator)}
+    {:noreply,
+     assign(
+       socket,
+       debounce: debounce(),
+       moderator: moderator,
+       name: name,
+       number: number
+     )}
   end
 
   @impl Phoenix.LiveView
@@ -151,9 +158,9 @@ defmodule QuickAverageWeb.AverageLive do
     {:noreply,
      assign(socket,
        average: LiveState.average(presence_list),
+       debounce: debounce(),
        presence_list: presence_list,
-       reveal_by_submission: LiveState.all_submitted?(presence_list),
-       debounce: debounce()
+       reveal_by_submission: LiveState.all_submitted?(presence_list)
      )}
   end
 
@@ -164,9 +171,9 @@ defmodule QuickAverageWeb.AverageLive do
     room_update(
       socket,
       %{
+        moderator: socket.assigns.moderator,
         name: socket.assigns.name,
-        number: nil,
-        moderator: socket.assigns.moderator
+        number: nil
       }
     )
 
