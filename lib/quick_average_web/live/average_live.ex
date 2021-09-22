@@ -13,7 +13,7 @@ defmodule QuickAverageWeb.AverageLive do
       self(),
       room_id,
       socket.id,
-      %{name: "New User", number: nil, moderator: false}
+      %{name: "New User", number: nil, only_viewing: false}
     )
 
     presence_list = Presence.list(room_id)
@@ -27,7 +27,7 @@ defmodule QuickAverageWeb.AverageLive do
     {:ok,
      assign(socket,
        admin: is_admin,
-       moderator: false,
+       only_viewing: false,
        average: nil,
        name: "",
        number: nil,
@@ -44,15 +44,15 @@ defmodule QuickAverageWeb.AverageLive do
         "update",
         %{
           "name" => input_name,
-          "role" => %{"moderator" => input_moderator}
+          "role" => %{"only_viewing" => input_only_viewing}
         } = payload,
         socket
       ) do
     name = LiveState.parse_name(input_name)
-    moderator = Boolean.parse(input_moderator)
+    only_viewing = Boolean.parse(input_only_viewing)
 
     input_number =
-      if moderator do
+      if only_viewing do
         nil
       else
         Map.get(payload, "number")
@@ -62,14 +62,14 @@ defmodule QuickAverageWeb.AverageLive do
       send(self(), %{store_state: %{name: name}})
     end
 
-    if moderator != socket.assigns.moderator do
-      send(self(), %{store_state: %{moderator: moderator}})
+    if only_viewing != socket.assigns.only_viewing do
+      send(self(), %{store_state: %{only_viewing: only_viewing}})
     end
 
     number = LiveState.parse_number(input_number)
 
     new_assigns = %{
-      moderator: moderator,
+      only_viewing: only_viewing,
       name: name,
       number: number
     }
@@ -85,7 +85,7 @@ defmodule QuickAverageWeb.AverageLive do
      assign(
        socket,
        debounce: debounce(),
-       moderator: moderator,
+       only_viewing: only_viewing,
        name: name,
        number: number
      )}
@@ -97,15 +97,15 @@ defmodule QuickAverageWeb.AverageLive do
         %{
           "admin_state" => admin_state_token,
           "name" => name,
-          "moderator" => state_moderator
+          "only_viewing" => state_only_viewing
         },
         socket
       ) do
-    moderator = Boolean.parse(state_moderator)
+    only_viewing = Boolean.parse(state_only_viewing)
 
     room_update(
       socket,
-      %{name: name, number: nil, moderator: moderator}
+      %{name: name, number: nil, only_viewing: only_viewing}
     )
 
     is_admin =
@@ -113,7 +113,7 @@ defmodule QuickAverageWeb.AverageLive do
         is_admin?(socket.assigns.room_id, admin_state_token)
 
     {:noreply,
-     assign(socket, admin: is_admin, name: name, moderator: moderator)}
+     assign(socket, admin: is_admin, name: name, only_viewing: only_viewing)}
   end
 
   @impl Phoenix.LiveView
@@ -171,7 +171,7 @@ defmodule QuickAverageWeb.AverageLive do
     room_update(
       socket,
       %{
-        moderator: socket.assigns.moderator,
+        only_viewing: socket.assigns.only_viewing,
         name: socket.assigns.name,
         number: nil
       }
@@ -235,10 +235,10 @@ defmodule QuickAverageWeb.AverageLive do
 
   defp display_average(number, reveal), do: display_number(number, reveal)
 
-  defp display_number(number, reveal, moderator \\ false)
+  defp display_number(number, reveal, only_viewing \\ false)
 
   defp display_number(_, _, "true"), do: "SHIT"
-  defp display_number(_, _, true), do: "Moderator"
+  defp display_number(_, _, true), do: "Viewing"
 
   defp display_number(nil, _, _), do: "Waiting"
 

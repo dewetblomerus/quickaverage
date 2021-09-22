@@ -14,13 +14,13 @@
         <label class="block text-gray-700 text-sm mb-1" for="number">
           Number
         </label>
-        <input type="text" name="number" value={@number} disabled={@moderator} phx-debounce={@debounce} placeholder="Number" autocomplete="off" id="number" class="appearance-none border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" >
+        <input type="text" name="number" value={@number} disabled={@only_viewing} phx-debounce={@debounce} placeholder="Number" autocomplete="off" id="number" class="appearance-none border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" >
       </div>
       <div class="mb-4">
         <label class="block text-gray-700 text-sm mb-1" for="number">
-          Moderating
+          Only Viewing
         </label>
-        <%= checkbox(:role, :moderator, value: @moderator) %>
+        <%= checkbox(:role, :only_viewing, value: @only_viewing) %>
       </div>
     </form>
   </div>
@@ -49,10 +49,10 @@
           </tr>
         </thead>
         <tbody>
-          <%= for %{name: name, number: number, moderator: moderator} <- @presence_list |> LiveState.user_list() do %>
+          <%= for %{name: name, number: number, only_viewing: only_viewing} <- @presence_list |> LiveState.user_list() do %>
             <tr class="bg-emerald-200">
               <td class="text-left max-w-xs pr-2"> <%= name %> </td>
-              <td class="text-right"> <%= display_number(number, @reveal_by_click || @reveal_by_submission, moderator) %> </td>
+              <td class="text-right"> <%= display_number(number, @reveal_by_click || @reveal_by_submission, only_viewing) %> </td>
             </tr>
           <% end %>
         </tbody>

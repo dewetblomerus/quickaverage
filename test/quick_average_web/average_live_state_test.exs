@@ -6,7 +6,7 @@ defmodule QuickAverageWeb.AverageLive.StateTest do
     "phx-FpFUEe4C66uTTgHH" => %{
       metas: [
         %{
-          moderator: false,
+          only_viewing: false,
           name: "Darth",
           number: 6.0,
           phx_ref: "FpFUFvXLJpz5pAOF",
@@ -17,7 +17,7 @@ defmodule QuickAverageWeb.AverageLive.StateTest do
     "phx-FpFUEgWEsnjpeAFB" => %{
       metas: [
         %{
-          moderator: false,
+          only_viewing: false,
           name: "Luke",
           number: 10.0,
           phx_ref: "FpFUFZZeaaj5pASE",
@@ -28,7 +28,7 @@ defmodule QuickAverageWeb.AverageLive.StateTest do
     "phx-FpFUEhHMdytRggOC" => %{
       metas: [
         %{
-          moderator: false,
+          only_viewing: false,
           name: "De Wet",
           number: 9.0,
           phx_ref: "FpFUFJ9yrlL5pAaD",
@@ -39,7 +39,7 @@ defmodule QuickAverageWeb.AverageLive.StateTest do
     "phx-FqV4G7Id0zASHQLH" => %{
       metas: [
         %{
-          moderator: true,
+          only_viewing: true,
           name: "JP",
           number: 1000,
           phx_ref: "FqV4M4ciuqfljARF",
@@ -109,7 +109,7 @@ defmodule QuickAverageWeb.AverageLive.StateTest do
     "phx-FqV4G7Id0zASHQLH" => %{
       metas: [
         %{
-          moderator: true,
+          only_viewing: true,
           name: "JP",
           number: nil,
           phx_ref: "FqV4M4ciuqfljARF",
@@ -151,7 +151,7 @@ defmodule QuickAverageWeb.AverageLive.StateTest do
       "phx-FqW4rL6PMfDn5gQI" => %{
         metas: [
           %{
-            moderator: false,
+            only_viewing: false,
             name: "other",
             number: nil,
             phx_ref: "FqW4rRHpnqjljAbI",
@@ -162,7 +162,7 @@ defmodule QuickAverageWeb.AverageLive.StateTest do
       "phx-FqW4rMfOcZBLhgUI" => %{
         metas: [
           %{
-            moderator: false,
+            only_viewing: false,
             name: "De Wet",
             number: nil,
             phx_ref: "FqW4rR-mFYDljAgF",
