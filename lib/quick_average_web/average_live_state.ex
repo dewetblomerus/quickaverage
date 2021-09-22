@@ -9,7 +9,7 @@ defmodule QuickAverageWeb.AverageLive.State do
   def all_submitted?(presence_list) do
     presence_list
     |> user_list()
-    |> Enum.reject(&moderator?/1)
+    |> Enum.reject(&only_viewing?/1)
     |> Enum.all?(fn user ->
       Map.get(user, :number)
     end)
@@ -22,11 +22,11 @@ defmodule QuickAverageWeb.AverageLive.State do
   end
 
   defp user_counted?(user) do
-    Map.get(user, :number) != nil && !moderator?(user)
+    Map.get(user, :number) != nil && !only_viewing?(user)
   end
 
-  defp moderator?(user) do
-    Map.get(user, :moderator, false)
+  defp only_viewing?(user) do
+    Map.get(user, :only_viewing, false)
   end
 
   defp calculate_average([]) do
