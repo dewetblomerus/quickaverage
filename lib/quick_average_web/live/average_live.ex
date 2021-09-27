@@ -192,7 +192,7 @@ defmodule QuickAverageWeb.AverageLive do
     {:noreply, assign(socket, reveal_by_click: !socket.assigns.reveal_by_click)}
   end
 
-  def debounce() do
+  def debounce do
     {:message_queue_len, queue_length} =
       Process.info(self(), :message_queue_len)
 
