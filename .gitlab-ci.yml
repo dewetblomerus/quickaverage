@@ -5,7 +5,7 @@
 
 mix:
   stage: test
-  image: elixir:latest
+  image: elixir:1.12.3-alpine
   before_script:
     - mix local.rebar --force
     - mix local.hex --force

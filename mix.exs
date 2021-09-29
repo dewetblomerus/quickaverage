@@ -40,12 +40,12 @@ defmodule QuickAverage.MixProject do
       {:phoenix_html, "~> 3.0.2"},
       {:phoenix_live_dashboard, "~> 0.5"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_view, "~> 0.16.1"},
-      {:phoenix, "~> 1.5.8"},
+      {:phoenix_live_view, "~> 0.16.4"},
+      {:phoenix, "~> 1.6.0"},
       {:plug_cowboy, "~> 2.0"},
       {:site_encrypt, "~> 0.4"},
-      {:telemetry_metrics, "~> 0.4"},
-      {:telemetry_poller, "~> 0.4"}
+      {:telemetry_metrics, "~> 0.6"},
+      {:telemetry_poller, "~> 0.5"}
     ]
   end
 
