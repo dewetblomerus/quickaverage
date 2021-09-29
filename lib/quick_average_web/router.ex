@@ -19,9 +19,9 @@ defmodule QuickAverageWeb.Router do
     plug :admin_basic_auth
   end
 
-  scope "/" do
+  scope "/dashboard" do
     pipe_through [:browser, :admins_only]
-    live_dashboard "/dashboard", metrics: QuickAverageWeb.Telemetry
+    live_dashboard "/", metrics: QuickAverageWeb.Telemetry
   end
 
   defp admin_basic_auth(conn, _opts) do
