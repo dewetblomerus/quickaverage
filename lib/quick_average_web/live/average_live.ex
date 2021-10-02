@@ -39,6 +39,10 @@ defmodule QuickAverageWeb.AverageLive do
      )}
   end
 
+  def handle_params(_params, url, socket) do
+    {:noreply, assign(socket, url: url)}
+  end
+
   @impl Phoenix.LiveView
   def handle_event(
         "update",
