@@ -173,14 +173,7 @@ defmodule QuickAverageWeb.AverageLive do
   def handle_info("clear", socket) do
     send(self(), "clear_number_front")
 
-    room_update(
-      socket,
-      %{
-        only_viewing: socket.assigns.only_viewing,
-        name: socket.assigns.name,
-        number: nil
-      }
-    )
+    room_update(socket, %{number: nil})
 
     {:noreply, assign(socket, number: nil, reveal_by_click: false)}
   end
