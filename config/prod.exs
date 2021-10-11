@@ -1,9 +1,5 @@
 use Mix.Config
 
-# For production, don't forget to configure the url host
-# to something meaningful, Phoenix uses this information
-# when generating URLs.
-
 http_port = 80
 https_port = 443
 
@@ -21,7 +17,6 @@ config :quick_average, QuickAverageWeb.Endpoint,
   force_ssl: [hsts: true],
   server: true
 
-# Do not print debug messages in production
 config :logger, level: :info
 
 # ## SSL Support
@@ -57,6 +52,3 @@ config :logger, level: :info
 #       force_ssl: [hsts: true]
 #
 # Check `Plug.SSL` for all available options in `force_ssl`.
-
-# Finally import the config/prod.secret.exs which loads secrets
-# and configuration from environment variables.
