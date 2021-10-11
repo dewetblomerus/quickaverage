@@ -16,4 +16,8 @@ config :logger, :console,
 
 config :phoenix, :json_library, Jason
 
+if Mix.env() == :dev || Mix.env() == :test do
+  import_config "dev_and_test.exs"
+end
+
 import_config "#{Mix.env()}.exs"
