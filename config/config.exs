@@ -2,8 +2,6 @@ use Mix.Config
 
 config :quick_average, QuickAverageWeb.Endpoint,
   url: [host: "av.dev"],
-  secret_key_base:
-    "HPq5hgfoebR5C8R4ogYNtHj8mJOLZm12nkcZZylVreIEQhHRTuFEPfxcNHi3Bn++",
   render_errors: [
     view: QuickAverageWeb.ErrorView,
     accepts: ~w(html json),

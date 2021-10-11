@@ -13,6 +13,8 @@ config :quick_average, QuickAverageWeb.Endpoint,
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
+  secret_key_base:
+    "HPq5hgfoebR5C8R4ogYNtHj8mJOLZm12nkcZZylVreIEQhHRTuFEPfxcNHi3Bn++",
   watchers: [
     node: [
       "node_modules/webpack/bin/webpack.js",
