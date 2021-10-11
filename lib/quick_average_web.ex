@@ -45,8 +45,7 @@ defmodule QuickAverageWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {QuickAverageWeb.LayoutView, "live.html"},
-        container: {:div, class: "h-full" }
+        layout: {QuickAverageWeb.LayoutView, "live.html"}
 
       unquote(view_helpers())
     end
