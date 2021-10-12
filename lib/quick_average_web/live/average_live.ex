@@ -122,9 +122,19 @@ defmodule QuickAverageWeb.AverageLive do
   end
 
   @impl Phoenix.LiveView
-  def handle_event(event, _, socket) when event in ["clear", "toggle_reveal"] do
+  def handle_event("clear", _, socket) do
     if socket.assigns.admin do
-      Presence.pubsub_broadcast(socket.assigns.room_id, event)
+      Presence.pubsub_broadcast(socket.assigns.room_id, "clear")
+    end
+
+    {:noreply, socket}
+  end
+
+  def handle_event("toggle_reveal", _, socket) do
+    if socket.assigns.admin do
+      Presence.pubsub_broadcast(socket.assigns.room_id, %{
+        set_reveal_by_click: !socket.assigns.reveal_by_click
+      })
     end
 
     {:noreply, socket}
@@ -193,8 +203,8 @@ defmodule QuickAverageWeb.AverageLive do
     {:noreply, push_event(socket, "clear_number", %{})}
   end
 
-  def handle_info("toggle_reveal", socket) do
-    {:noreply, assign(socket, reveal_by_click: !socket.assigns.reveal_by_click)}
+  def handle_info(%{set_reveal_by_click: reveal_by_click}, socket) do
+    {:noreply, assign(socket, reveal_by_click: reveal_by_click)}
   end
 
   def debounce do
