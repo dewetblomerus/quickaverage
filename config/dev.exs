@@ -14,13 +14,8 @@ config :quick_average, QuickAverageWeb.Endpoint,
   code_reloader: true,
   check_origin: false,
   watchers: [
-    node: [
-      "node_modules/webpack/bin/webpack.js",
-      "--mode",
-      "development",
-      "--watch-stdin",
-      cd: Path.expand("../assets", __DIR__)
-    ]
+    esbuild:
+      {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
   ]
 
 # ## SSL Support
@@ -49,6 +44,8 @@ config :quick_average, QuickAverageWeb.Endpoint,
 
 # Watch static and templates for browser reloading.
 config :quick_average, QuickAverageWeb.Endpoint,
+  esbuild:
+    {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
   live_reload: [
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",

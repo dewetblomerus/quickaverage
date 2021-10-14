@@ -37,6 +37,7 @@ defmodule QuickAverage.MixProject do
       {:floki, ">= 0.27.0", only: :test},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
+      {:esbuild, "~> 0.1", runtime: Mix.env() == :dev},
       {:phoenix_html, "~> 3.0.2"},
       {:phoenix_live_dashboard, "~> 0.5"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
@@ -57,7 +58,8 @@ defmodule QuickAverage.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "cmd npm install --prefix assets"]
+      setup: ["deps.get"],
+      "assets.deploy": ["esbuild default --minify", "phx.digest"]
     ]
   end
 end
