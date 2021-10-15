@@ -1,9 +1,7 @@
 use Mix.Config
 
-config :quick_average,
-  use_https: true
-
 config :quick_average, QuickAverageWeb.Endpoint,
+  url: [host: "av.dev"],
   render_errors: [
     view: QuickAverageWeb.ErrorView,
     accepts: ~w(html json),
@@ -11,14 +9,6 @@ config :quick_average, QuickAverageWeb.Endpoint,
   ],
   pubsub_server: QuickAverage.PubSub,
   live_view: [signing_salt: "x0WejuJy"]
-
-config :esbuild,
-  version: "0.12.15",
-  default: [
-    args: ~w(js/app.js --bundle --target=es2016 --outdir=../priv/static/assets),
-    cd: Path.expand("../assets", __DIR__),
-    env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
-  ]
 
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
