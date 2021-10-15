@@ -43,22 +43,10 @@ defmodule QuickAverageWeb.Endpoint do
   @impl Phoenix.Endpoint
   def init(_key, config) do
     # this will merge key, cert, and chain into `:https` configuration from config.exs
-
-    {:ok,
-     configuration(config,
-       use_https: Application.get_env(:quick_average, :use_https)
-     )}
+    {:ok, SiteEncrypt.Phoenix.configure_https(config)}
 
     # to completely configure https from `init/2`, invoke:
     #   SiteEncrypt.Phoenix.configure_https(config, port: 4001, ...)
-  end
-
-  def configuration(config, use_https: true) do
-    SiteEncrypt.Phoenix.configure_https(config)
-  end
-
-  def configuration(config, use_https: false) do
-    config
   end
 
   # The session will be stored in the cookie and signed,
@@ -85,7 +73,7 @@ defmodule QuickAverageWeb.Endpoint do
     at: "/",
     from: :quick_average,
     gzip: false,
-    only: ~w(assets fonts images favicon.ico robots.txt)
+    only: ~w(css fonts images js favicon.ico robots.txt)
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
