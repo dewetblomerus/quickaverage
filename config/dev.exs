@@ -1,15 +1,22 @@
 use Mix.Config
 
+use_https = true
+
 config :quick_average,
   username: "asdf",
-  password: "asdf"
+  password: "asdf",
+  use_https: use_https
+
+host =
+  if use_https do
+    "av.dev"
+  else
+    "localhost"
+  end
 
 config :quick_average, QuickAverageWeb.Endpoint,
+  url: [host: host],
   http: [port: 4000],
-  https: [
-    port: 4001,
-    cipher_suite: :strong
-  ],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
@@ -25,6 +32,14 @@ config :quick_average, QuickAverageWeb.Endpoint,
       cd: Path.expand("../assets", __DIR__)
     ]
   ]
+
+if use_https do
+  config :quick_average, QuickAverageWeb.Endpoint,
+    https: [
+      port: 4001,
+      cipher_suite: :strong
+    ]
+end
 
 # ## SSL Support
 #
