@@ -19,15 +19,13 @@ COPY config config
 RUN mix do deps.get, deps.compile
 
 # build assets
-COPY assets/package.json assets/package-lock.json ./assets/
-RUN npm --prefix ./assets ci --progress=false --no-audit --loglevel=error
-
-COPY priv priv
 COPY assets assets
+COPY priv priv
+
+RUN mix assets.deploy
 
 # copy lib before assets deploy to prevent purging used CSS http://disq.us/p/2bsocpx
 COPY lib lib
-RUN npm run --prefix ./assets deploy
 RUN mix phx.digest
 
 # compile and build release
