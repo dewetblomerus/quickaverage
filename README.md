@@ -6,4 +6,6 @@ Development:
   * Install Node.js dependencies with `npm install` inside the `assets` directory
   * Start Phoenix endpoint with `mix phx.server`
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+Set your OS to trust the cert in `tmp/site_encrypt_db/certs/av.dev/cert.pem`
+
+Now you can visit [`av.dev:4001`](http://av.dev:4001) from your browser.
