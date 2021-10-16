@@ -1,7 +1,9 @@
 use Mix.Config
 
+config :quick_average,
+  use_https: true
+
 config :quick_average, QuickAverageWeb.Endpoint,
-  url: [host: "av.dev"],
   render_errors: [
     view: QuickAverageWeb.ErrorView,
     accepts: ~w(html json),
