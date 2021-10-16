@@ -18,22 +18,15 @@ COPY mix.exs mix.lock ./
 COPY config config
 RUN mix do deps.get, deps.compile
 
-# build assets
 COPY assets assets
 COPY priv priv
 
-RUN mix assets.deploy
-
 # copy lib before assets deploy to prevent purging used CSS http://disq.us/p/2bsocpx
 COPY lib lib
-RUN mix phx.digest
 
-# compile and build release
-# uncomment COPY if rel/ exists
-# COPY rel rel
+RUN mix assets.deploy
 RUN mix do compile, release
 
-# prepare release image
 FROM alpine:3.13.5 AS app
 RUN apk add --no-cache openssl ncurses-libs libstdc++
 
