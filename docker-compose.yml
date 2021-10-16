@@ -9,11 +9,11 @@ services:
     environment:
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - ADMIN_USERNAME=${ADMIN_USERNAME}
-      - CERT_MODE=${CERT_MODE}
+      - CERT_MODE=${CERT_MODE:-production}
       - HOST=${HOST}
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
       - SITE_ENCRYPT_DB=${SITE_ENCRYPT_DB:-/tmp/site_encrypt_db}
-      - USE_HTTPS=${USE_HTTPS}
+      - USE_HTTPS=${USE_HTTPS:-true}
     volumes:
       - ./site_encrypt_db:${SITE_ENCRYPT_DB:-/tmp/site_encrypt_db}
     restart: unless-stopped
