@@ -12,6 +12,14 @@ config :quick_average, QuickAverageWeb.Endpoint,
   pubsub_server: QuickAverage.PubSub,
   live_view: [signing_salt: "x0WejuJy"]
 
+config :esbuild,
+  version: "0.13.4",
+  default: [
+    args: ~w(js/app.js --bundle --target=es2016 --outdir=../priv/static/assets),
+    cd: Path.expand("../assets", __DIR__),
+    env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
+  ]
+
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]

@@ -22,20 +22,15 @@ RUN mix do deps.get, deps.compile
 COPY assets/package.json assets/package-lock.json ./assets/
 RUN npm --prefix ./assets ci --progress=false --no-audit --loglevel=error
 
-COPY priv priv
 COPY assets assets
+COPY priv priv
 
 # copy lib before assets deploy to prevent purging used CSS http://disq.us/p/2bsocpx
 COPY lib lib
-RUN npm run --prefix ./assets deploy
-RUN mix phx.digest
 
-# compile and build release
-# uncomment COPY if rel/ exists
-# COPY rel rel
+RUN mix assets.deploy
 RUN mix do compile, release
 
-# prepare release image
 FROM alpine:3.13.5 AS app
 RUN apk add --no-cache openssl ncurses-libs libstdc++
 
