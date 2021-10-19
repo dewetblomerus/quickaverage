@@ -55,40 +55,6 @@ defmodule QuickAverageWeb.Benchmark.User do
     {:ok, %{assigns: assigns, id: pid_string}}
   end
 
-  @impl Phoenix.LiveView
-  def mount(%{"room_id" => room_id}, _session, socket) do
-    QuickAverageWeb.Endpoint.subscribe(room_id)
-
-    Presence.track(
-      self(),
-      room_id,
-      socket.id,
-      %{name: "New User", number: nil, only_viewing: false}
-    )
-
-    presence_list = Presence.list(room_id)
-
-    is_admin = is_alone?(presence_list)
-
-    if is_admin do
-      send(self(), :set_admin)
-    end
-
-    {:ok,
-     assign(socket,
-       admin: is_admin,
-       only_viewing: false,
-       average: nil,
-       name: "",
-       number: nil,
-       presence_list: presence_list,
-       reveal_by_submission: false,
-       reveal_by_click: false,
-       room_id: room_id,
-       debounce: 0
-     )}
-  end
-
   @impl true
   def handle_params(_params, url, socket) do
     {:noreply, assign(socket, url: url)}
