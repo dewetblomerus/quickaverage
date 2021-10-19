@@ -7,20 +7,25 @@ defmodule QuickAverageWeb.Benchmark.User do
   alias QuickAverageWeb.Presence.State, as: PresenceState
   require IEx
 
-  # QuickAverageWeb.Benchmark.User.create("135")
-  def create(room_id) do
+  # QuickAverageWeb.Benchmark.User.create("4")
+  @default_refresh_interval 500
+
+  def create(room_id, options \\ []) do
+    refresh_interval =
+      Keyword.get(options, :refresh_interval, @default_refresh_interval)
+
     DynamicSupervisor.start_child(
       QuickAverageWeb.BenchmarkSupervisor,
-      {QuickAverageWeb.Benchmark.User, room_id}
+      {QuickAverageWeb.Benchmark.User, {room_id, refresh_interval}}
     )
   end
 
-  def start_link(room_id) when is_binary(room_id) do
-    GenServer.start_link(__MODULE__, %{room_id: room_id})
+  def start_link({room_id, refresh_interval}) when is_binary(room_id) do
+    GenServer.start_link(__MODULE__, {room_id, refresh_interval})
   end
 
   @impl true
-  def init(%{room_id: room_id}) do
+  def init({room_id, refresh_interval}) do
     QuickAverageWeb.Endpoint.subscribe(room_id)
     pid_string = inspect(self())
     socket = %{id: pid_string}
@@ -53,23 +58,30 @@ defmodule QuickAverageWeb.Benchmark.User do
       debounce: 0
     }
 
+    :timer.send_interval(refresh_interval, :refresh)
     {:ok, %{assigns: assigns, id: pid_string}}
   end
 
-  @impl true
-  def handle_params(_params, url, socket) do
-    {:noreply, assign(socket, url: url)}
-  end
-
   @impl Phoenix.LiveView
-  def handle_event(
-        "update",
-        %{
-          "name" => input_name,
-          "role" => %{"only_viewing" => input_only_viewing}
-        } = payload,
+  def handle_info(
+        :refresh,
         socket
       ) do
+    input_name =
+      [
+        "Darth Vader",
+        "Luke Skywalker",
+        "Princess Leia",
+        "Yoda",
+        "Emperor Palpatine",
+        "Obi-Wan Kenobi",
+        "Han Solo",
+        "Chewbacca"
+      ]
+      |> Enum.random()
+
+    input_only_viewing = false
+    input_number = Enum.random(-1_000_000..1_000_000) |> Integer.to_string()
     name = LiveState.parse_name(input_name)
     only_viewing = Boolean.parse(input_only_viewing)
 
@@ -77,7 +89,7 @@ defmodule QuickAverageWeb.Benchmark.User do
       if only_viewing do
         nil
       else
-        Map.get(payload, "number")
+        input_number
       end
 
     if name != socket.assigns.name do
