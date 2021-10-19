@@ -1,5 +1,6 @@
 defmodule QuickAverageWeb.Benchmark.User do
   use GenServer
+  import QuickAverageWeb.AverageLive
   alias QuickAverage.Boolean
   alias QuickAverageWeb.AverageLive.State, as: LiveState
   alias QuickAverageWeb.Presence
@@ -225,64 +226,8 @@ defmodule QuickAverageWeb.Benchmark.User do
     {:noreply, assign(socket, reveal_by_click: reveal_by_click)}
   end
 
-  def debounce do
-    {:message_queue_len, queue_length} =
-      Process.info(self(), :message_queue_len)
-
-    min(queue_length * 100, 500)
-  end
-
-  def is_alone?(presence_list) do
-    Enum.count(presence_list) < 2
-  end
-
-  def is_admin?(room_id, admin_state_token) do
-    admin_string = "#{room_id}:true"
-
-    admin_state =
-      Phoenix.Token.verify(
-        QuickAverageWeb.Endpoint,
-        "admin state",
-        admin_state_token,
-        max_age: 86_400
-      )
-
-    case admin_state do
-      {:ok, ^admin_string} -> true
-      _ -> false
-    end
-  end
-
-  def room_update(socket, meta) do
-    Presence.update(
-      self(),
-      socket.assigns.room_id,
-      socket.id,
-      meta
-    )
-  end
-
   def assign(%{assigns: assigns} = socket, opts \\ []) do
     new_assigns = Enum.into(opts, socket.assigns)
     Map.replace!(socket, :assigns, new_assigns)
-  end
-
-  # template helpers
-
-  defp display_average(_, false), do: "Waiting"
-
-  defp display_average(number, reveal), do: display_number(number, reveal)
-
-  defp display_number(number, reveal, only_viewing \\ false)
-
-  defp display_number(_, _, "true"), do: "SHIT"
-  defp display_number(_, _, true), do: "Viewing"
-
-  defp display_number(nil, _, _), do: "Waiting"
-
-  defp display_number(_, false, _), do: "Hidden"
-
-  defp display_number(number, true, _) do
-    LiveState.integerize(number)
   end
 end
