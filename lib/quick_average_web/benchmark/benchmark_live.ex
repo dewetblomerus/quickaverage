@@ -26,11 +26,11 @@ defmodule QuickAverageWeb.BenchmarkLive do
     number_of_clients = parse_number(input_number_of_clients)
     refresh_interval = parse_number(input_refresh_interval)
 
-    new_assigns = [
+    new_assigns = %{
       room_id: room_id,
       number_of_clients: parse_number(number_of_clients),
       refresh_interval: parse_number(refresh_interval)
-    ]
+    }
 
     SupervisorInterface.update(new_assigns)
 

@@ -5,30 +5,28 @@ defmodule QuickAverageWeb.Supervisor.Interface do
   @supervisor QuickAverageWeb.BenchmarkSupervisor
 
   def update(
-        room_id: _room_id,
-        number_of_clients: nil,
-        refresh_interval: _refresh_interval
-      ),
-      do: :ok
-
-  def update(
-        [
+        %{
           room_id: room_id,
-          number_of_clients: desired_number,
+          number_of_clients: input_number,
           refresh_interval: refresh_interval
-        ] = params
+        } = params
       ) do
+    desired_number = parse_number(input_number)
     children_number_diff = desired_number - Enum.count(children())
 
     adjust(params, children_number_diff)
   end
 
+  def parse_number(nil), do: 0
+  def parse_number(""), do: 0
+  def parse_number(input_number), do: input_number
+
   def adjust(
-        [
+        %{
           room_id: room_id,
           number_of_clients: desired_number,
           refresh_interval: refresh_interval
-        ] = params,
+        } = params,
         diff
       )
       when diff > 0 do
@@ -37,11 +35,11 @@ defmodule QuickAverageWeb.Supervisor.Interface do
   end
 
   def adjust(
-        [
+        %{
           room_id: room_id,
           number_of_clients: desired_number,
           refresh_interval: refresh_interval
-        ] = params,
+        } = params,
         diff
       )
       when diff < 0 do
@@ -49,14 +47,7 @@ defmodule QuickAverageWeb.Supervisor.Interface do
     -1..diff |> Enum.each(fn _ -> delete() end)
   end
 
-  def adjust(
-        [
-          room_id: room_id,
-          number_of_clients: desired_number,
-          refresh_interval: refresh_interval
-        ],
-        0
-      ) do
+  def adjust(_, 0) do
     Logger.info("desired number reached")
   end
 
