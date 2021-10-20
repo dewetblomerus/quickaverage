@@ -8,17 +8,13 @@ defmodule QuickAverage.Application do
   def start(_type, _args) do
     children =
       [
-        # Start the Telemetry supervisor
         QuickAverageWeb.Telemetry,
-        # Start the PubSub system
         {Phoenix.PubSub, name: QuickAverage.PubSub},
-        QuickAverageWeb.Presence
-        # Start a worker by calling: QuickAverage.Worker.start_link(arg)
-        # {QuickAverage.Worker, arg}
+        QuickAverageWeb.Presence,
+        {DynamicSupervisor,
+         strategy: :one_for_one, name: QuickAverageWeb.BenchmarkSupervisor}
       ] ++ endpoint(use_https: Application.get_env(:quick_average, :use_https))
 
-    # See https://hexdocs.pm/elixir/Supervisor.html
-    # for other strategies and supported options
     opts = [strategy: :one_for_one, name: QuickAverage.Supervisor]
     Supervisor.start_link(children, opts)
   end
