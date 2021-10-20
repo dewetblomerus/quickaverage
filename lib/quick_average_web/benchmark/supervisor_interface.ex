@@ -1,7 +1,8 @@
 defmodule QuickAverageWeb.Supervisor.Interface do
-  require IEx
-  @supervisor QuickAverageWeb.BenchmarkSupervisor
+  require Logger
   alias QuickAverageWeb.Benchmark.User
+
+  @supervisor QuickAverageWeb.BenchmarkSupervisor
 
   def update(
         room_id: _room_id,
@@ -17,8 +18,9 @@ defmodule QuickAverageWeb.Supervisor.Interface do
           refresh_interval: refresh_interval
         ] = params
       ) do
-    current_number = Enum.count(children())
-    adjust(params, current_number)
+    children_number_diff = desired_number - Enum.count(children())
+
+    adjust(params, children_number_diff)
   end
 
   def adjust(
@@ -27,13 +29,11 @@ defmodule QuickAverageWeb.Supervisor.Interface do
           number_of_clients: desired_number,
           refresh_interval: refresh_interval
         ] = params,
-        current_number
+        diff
       )
-      when current_number < desired_number do
-    IO.inspect(current_number, label: "current_number")
-    IO.inspect(desired_number, label: "desired_number")
-    create(room_id, refresh_interval)
-    adjust(params, Enum.count(children))
+      when diff > 0 do
+    Logger.info(diff, label: "diff")
+    1..diff |> Enum.each(fn _ -> create(room_id, refresh_interval) end)
   end
 
   def adjust(
@@ -42,13 +42,11 @@ defmodule QuickAverageWeb.Supervisor.Interface do
           number_of_clients: desired_number,
           refresh_interval: refresh_interval
         ] = params,
-        current_number
+        diff
       )
-      when current_number > desired_number do
-    IO.inspect(current_number, label: "current_number")
-    IO.inspect(desired_number, label: "desired_number")
-    delete()
-    adjust(params, Enum.count(children))
+      when diff < 0 do
+    Logger.info(diff, label: "diff")
+    -1..diff |> Enum.each(fn _ -> delete() end)
   end
 
   def adjust(
@@ -57,10 +55,9 @@ defmodule QuickAverageWeb.Supervisor.Interface do
           number_of_clients: desired_number,
           refresh_interval: refresh_interval
         ],
-        current_number
+        0
       ) do
-    IO.inspect(current_number, label: "current_number")
-    IO.inspect(desired_number, label: "desired_number")
+    Logger.info("desired number reached")
   end
 
   def create(room_id, refresh_interval) do
