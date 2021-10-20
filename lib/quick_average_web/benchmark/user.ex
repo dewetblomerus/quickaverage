@@ -7,19 +7,6 @@ defmodule QuickAverageWeb.Benchmark.User do
   alias QuickAverageWeb.Presence.State, as: PresenceState
   require IEx
 
-  # QuickAverageWeb.Benchmark.User.create("4")
-  @default_refresh_interval 500
-
-  def create(room_id, options \\ []) do
-    refresh_interval =
-      Keyword.get(options, :refresh_interval, @default_refresh_interval)
-
-    DynamicSupervisor.start_child(
-      QuickAverageWeb.BenchmarkSupervisor,
-      {QuickAverageWeb.Benchmark.User, {room_id, refresh_interval}}
-    )
-  end
-
   def start_link({room_id, refresh_interval}) when is_binary(room_id) do
     GenServer.start_link(__MODULE__, {room_id, refresh_interval})
   end
