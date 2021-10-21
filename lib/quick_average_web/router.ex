@@ -1,6 +1,7 @@
 defmodule QuickAverageWeb.Router do
   use QuickAverageWeb, :router
   import Phoenix.LiveDashboard.Router
+  alias QuickAverageWeb.Telemetry
 
   pipeline :browser do
     plug :accepts, ["html"]
