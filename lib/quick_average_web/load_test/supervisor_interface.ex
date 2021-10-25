@@ -1,8 +1,8 @@
 defmodule QuickAverageWeb.Supervisor.Interface do
   require Logger
-  alias QuickAverageWeb.Benchmark.User
+  alias QuickAverageWeb.LoadTest.User
 
-  @supervisor QuickAverageWeb.BenchmarkSupervisor
+  @supervisor QuickAverageWeb.LoadTestSupervisor
 
   def update(%{number_of_clients: desired_number} = params) do
     children_number_diff = desired_number - Enum.count(children())

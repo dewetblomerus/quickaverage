@@ -1,4 +1,4 @@
-defmodule QuickAverageWeb.Benchmark.User do
+defmodule QuickAverageWeb.LoadTest.User do
   use GenServer
   import QuickAverageWeb.AverageLive
   alias QuickAverage.Boolean
@@ -21,7 +21,7 @@ defmodule QuickAverageWeb.Benchmark.User do
       self(),
       room_id,
       socket.id,
-      %{name: "Benchmark User", number: nil, only_viewing: false}
+      %{name: "LoadTest User", number: nil, only_viewing: false}
     )
 
     presence_list = Presence.list(room_id)
@@ -36,7 +36,7 @@ defmodule QuickAverageWeb.Benchmark.User do
       admin: false,
       only_viewing: false,
       average: nil,
-      name: "Benchmark User",
+      name: "LoadTest User",
       number: nil,
       presence_list: presence_list,
       reveal_by_submission: false,

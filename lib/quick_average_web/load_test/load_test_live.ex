@@ -1,4 +1,4 @@
-defmodule QuickAverageWeb.BenchmarkLive do
+defmodule QuickAverageWeb.LoadTestLive do
   require IEx
   use QuickAverageWeb, :live_view
   alias QuickAverageWeb.Supervisor.Interface, as: SupervisorInterface

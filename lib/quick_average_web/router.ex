@@ -23,7 +23,7 @@ defmodule QuickAverageWeb.Router do
   scope "/admin", QuickAverageWeb do
     pipe_through [:browser, :admins_only]
     live_dashboard "/dashboard", metrics: Telemetry
-    live "/benchmark", BenchmarkLive
+    live "/load-test", LoadTestLive
   end
 
   defp admin_basic_auth(conn, _opts) do
