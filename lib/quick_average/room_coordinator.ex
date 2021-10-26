@@ -1,4 +1,4 @@
-defmodule QuickAverage.RoomCoordinator.Server do
+defmodule QuickAverage.RoomCoordinator do
   require IEx
   use GenServer
   alias QuickAverage.Boolean
@@ -36,9 +36,15 @@ defmodule QuickAverage.RoomCoordinator.Server do
 
     presence_list = PresenceState.sync_diff(presence_list, payload)
 
+    display_state = %{
+      users_list: presence_list,
+      average: LiveState.average(presence_list),
+      reveal_by_submission: LiveState.all_submitted?(presence_list)
+    }
+
     Presence.pubsub_broadcast(
       "#{room_id}-display",
-      {:refresh, %{users_list: presence_list}}
+      {:refresh, display_state}
     )
 
     {:noreply,

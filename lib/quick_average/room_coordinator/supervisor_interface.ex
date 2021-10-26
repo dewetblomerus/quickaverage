@@ -1,7 +1,7 @@
 defmodule QuickAverage.RoomCoordinator.SupervisorInterface do
   require Logger
 
-  @genserver QuickAverage.RoomCoordinator.Server
+  @genserver QuickAverage.RoomCoordinator
   @supervisor QuickAverage.RoomCoordinatorSupervisor
 
   def create(room_id) do

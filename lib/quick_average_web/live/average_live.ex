@@ -153,13 +153,13 @@ defmodule QuickAverageWeb.AverageLive do
      })}
   end
 
-  def handle_info({:refresh, %{users_list: users_list}}, socket) do
+  def handle_info({:refresh, display_state}, socket) do
     {:noreply,
      assign(socket,
-       average: LiveState.average(users_list),
+       average: display_state.average,
        debounce: debounce(),
-       presence_list: users_list,
-       reveal_by_submission: LiveState.all_submitted?(users_list)
+       presence_list: display_state.users_list,
+       reveal_by_submission: display_state.reveal_by_submission
      )}
   end
 

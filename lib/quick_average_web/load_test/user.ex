@@ -13,7 +13,7 @@ defmodule QuickAverageWeb.LoadTest.User do
 
   @impl true
   def init({room_id, refresh_interval}) do
-    QuickAverageWeb.Endpoint.subscribe(room_id)
+    QuickAverageWeb.Endpoint.subscribe(display_topic(room_id))
     pid_string = inspect(self())
     socket = %{id: pid_string}
 
@@ -45,13 +45,13 @@ defmodule QuickAverageWeb.LoadTest.User do
       debounce: 0
     }
 
-    :timer.send_interval(refresh_interval, :refresh)
+    :timer.send_interval(refresh_interval, :tick)
     {:ok, %{assigns: assigns, id: pid_string}}
   end
 
   @impl Phoenix.LiveView
   def handle_info(
-        :refresh,
+        :tick,
         socket
       ) do
     input_name =
@@ -174,26 +174,13 @@ defmodule QuickAverageWeb.LoadTest.User do
   def push_event(_, _, _), do: :ok
 
   @impl true
-  def handle_info(
-        %Phoenix.Socket.Broadcast{
-          event: "presence_diff",
-          payload: payload
-        },
-        socket
-      ) do
-    :telemetry.execute([:quick_average, :presence], %{
-      event: "presence_diff"
-    })
-
-    presence_list =
-      PresenceState.sync_diff(socket.assigns.presence_list, payload)
-
+  def handle_info({:refresh, display_state}, socket) do
     {:noreply,
      assign(socket,
-       average: LiveState.average(presence_list),
+       average: display_state.average,
        debounce: debounce(),
-       presence_list: presence_list,
-       reveal_by_submission: LiveState.all_submitted?(presence_list)
+       presence_list: display_state.users_list,
+       reveal_by_submission: display_state.reveal_by_submission
      )}
   end
 
@@ -229,4 +216,6 @@ defmodule QuickAverageWeb.LoadTest.User do
     new_assigns = Enum.into(opts, socket.assigns)
     Map.replace!(socket, :assigns, new_assigns)
   end
+
+  defp display_topic(room_id), do: "#{room_id}-display"
 end
