@@ -212,8 +212,15 @@ defmodule QuickAverageWeb.LoadTest.User do
     {:noreply, assign(socket, reveal_by_click: reveal_by_click)}
   end
 
-  def assign(%{assigns: assigns} = socket, opts \\ []) do
+  def assign(_, _, opts \\ [])
+
+  def assign(:ok, %{assigns: assigns} = socket, opts) do
     new_assigns = Enum.into(opts, socket.assigns)
+    Map.replace!(socket, :assigns, new_assigns)
+  end
+
+  def assign(%{assigns: assigns} = socket, assings_kwlist, opts) do
+    new_assigns = Enum.into(opts, assigns)
     Map.replace!(socket, :assigns, new_assigns)
   end
 
