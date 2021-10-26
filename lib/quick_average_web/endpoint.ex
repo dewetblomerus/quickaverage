@@ -85,7 +85,7 @@ defmodule QuickAverageWeb.Endpoint do
     at: "/",
     from: :quick_average,
     gzip: false,
-    only: ~w(assets fonts images favicon.ico robots.txt)
+    only: ~w(assets fonts images robots.txt)
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.

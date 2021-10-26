@@ -1,5 +1,10 @@
 defmodule QuickAverageWeb.AverageLive do
+  require IEx
   use QuickAverageWeb, :live_view
+
+  alias QuickAverage.RoomCoordinator.SupervisorInterface,
+    as: CoordinatorSupervisor
+
   alias QuickAverage.Boolean
   alias QuickAverageWeb.AverageLive.State, as: LiveState
   alias QuickAverageWeb.Presence
@@ -7,7 +12,8 @@ defmodule QuickAverageWeb.AverageLive do
 
   @impl Phoenix.LiveView
   def mount(%{"room_id" => room_id}, _session, socket) do
-    QuickAverageWeb.Endpoint.subscribe(room_id)
+    CoordinatorSupervisor.create(room_id)
+    QuickAverageWeb.Endpoint.subscribe(display_topic(room_id))
 
     Presence.track(
       self(),
@@ -16,22 +22,14 @@ defmodule QuickAverageWeb.AverageLive do
       %{name: "New User", number: nil, only_viewing: false}
     )
 
-    presence_list = Presence.list(room_id)
-
-    is_admin = is_alone?(presence_list)
-
-    if is_admin do
-      send(self(), :set_admin)
-    end
-
     {:ok,
      assign(socket,
-       admin: is_admin,
+       admin: true,
        only_viewing: false,
        average: nil,
        name: "",
        number: nil,
-       presence_list: presence_list,
+       presence_list: %{},
        reveal_by_submission: false,
        reveal_by_click: false,
        room_id: room_id,
@@ -124,7 +122,7 @@ defmodule QuickAverageWeb.AverageLive do
   @impl Phoenix.LiveView
   def handle_event("clear", _, socket) do
     if socket.assigns.admin do
-      Presence.pubsub_broadcast(socket.assigns.room_id, "clear")
+      Presence.pubsub_broadcast(display_topic(socket.assigns.room_id), "clear")
     end
 
     {:noreply, socket}
@@ -132,7 +130,7 @@ defmodule QuickAverageWeb.AverageLive do
 
   def handle_event("toggle_reveal", _, socket) do
     if socket.assigns.admin do
-      Presence.pubsub_broadcast(socket.assigns.room_id, %{
+      Presence.pubsub_broadcast(display_topic(socket.assigns.room_id), %{
         set_reveal_by_click: !socket.assigns.reveal_by_click
       })
     end
@@ -155,27 +153,13 @@ defmodule QuickAverageWeb.AverageLive do
      })}
   end
 
-  @impl true
-  def handle_info(
-        %Phoenix.Socket.Broadcast{
-          event: "presence_diff",
-          payload: payload
-        },
-        socket
-      ) do
-    :telemetry.execute([:quick_average, :presence], %{
-      event: "presence_diff"
-    })
-
-    presence_list =
-      PresenceState.sync_diff(socket.assigns.presence_list, payload)
-
+  def handle_info({:refresh, %{users_list: users_list}}, socket) do
     {:noreply,
      assign(socket,
-       average: LiveState.average(presence_list),
+       average: LiveState.average(users_list),
        debounce: debounce(),
-       presence_list: presence_list,
-       reveal_by_submission: LiveState.all_submitted?(presence_list)
+       presence_list: users_list,
+       reveal_by_submission: LiveState.all_submitted?(users_list)
      )}
   end
 
@@ -206,6 +190,8 @@ defmodule QuickAverageWeb.AverageLive do
   def handle_info(%{set_reveal_by_click: reveal_by_click}, socket) do
     {:noreply, assign(socket, reveal_by_click: reveal_by_click)}
   end
+
+  defp display_topic(room_id), do: "#{room_id}-display"
 
   def debounce do
     {:message_queue_len, queue_length} =
