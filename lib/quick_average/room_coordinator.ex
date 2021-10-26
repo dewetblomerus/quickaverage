@@ -5,6 +5,7 @@ defmodule QuickAverage.RoomCoordinator do
   alias QuickAverageWeb.AverageLive.State, as: LiveState
   alias QuickAverageWeb.Presence
   alias QuickAverageWeb.Presence.State, as: PresenceState
+  @refresh_interval 50
 
   def start_link(room_id) when is_binary(room_id) do
     name = :"#{room_id}"
@@ -18,8 +19,10 @@ defmodule QuickAverage.RoomCoordinator do
     # pid_string = inspect(self())
 
     presence_list = Presence.list(room_id)
+    state = %{room_id: room_id, presence_list: presence_list}
+    Process.send_after(self(), {:update, __MODULE__}, 1)
 
-    {:ok, %{room_id: room_id, presence_list: presence_list}}
+    {:ok, state}
   end
 
   @impl true
@@ -36,23 +39,26 @@ defmodule QuickAverage.RoomCoordinator do
 
     presence_list = PresenceState.sync_diff(presence_list, payload)
 
-    display_state = %{
-      users_list: presence_list,
-      average: LiveState.average(presence_list),
-      reveal_by_submission: LiveState.all_submitted?(presence_list)
-    }
-
-    Presence.pubsub_broadcast(
-      "#{room_id}-display",
-      {:refresh, display_state}
-    )
-
     {:noreply,
      %{
        room_id: room_id,
-       average: LiveState.average(presence_list),
-       presence_list: presence_list,
-       reveal_by_submission: LiveState.all_submitted?(presence_list)
+       presence_list: presence_list
      }}
+  end
+
+  def handle_info({:update, __MODULE__}, state) do
+    display_state = %{
+      users_list: LiveState.user_list(state.presence_list),
+      average: LiveState.average(state.presence_list),
+      reveal_by_submission: LiveState.all_submitted?(state.presence_list)
+    }
+
+    Presence.pubsub_broadcast(
+      "#{state.room_id}-display",
+      {:refresh, display_state}
+    )
+
+    Process.send_after(self(), {:update, __MODULE__}, @refresh_interval)
+    {:noreply, state}
   end
 end

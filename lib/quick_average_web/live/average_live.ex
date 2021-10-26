@@ -193,12 +193,7 @@ defmodule QuickAverageWeb.AverageLive do
 
   defp display_topic(room_id), do: "#{room_id}-display"
 
-  def debounce do
-    {:message_queue_len, queue_length} =
-      Process.info(self(), :message_queue_len)
-
-    min(queue_length * 100, 500)
-  end
+  def debounce, do: 0
 
   def is_alone?(presence_list) do
     Enum.count(presence_list) < 2

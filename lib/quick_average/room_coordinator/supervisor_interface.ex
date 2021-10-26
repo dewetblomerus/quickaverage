@@ -20,5 +20,3 @@ defmodule QuickAverage.RoomCoordinator.SupervisorInterface do
     DynamicSupervisor.terminate_child(@supervisor, pid)
   end
 end
-
-# QuickAverage.RoomCoordinator.SupervisorInterface.create("5")
