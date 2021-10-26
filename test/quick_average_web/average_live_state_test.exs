@@ -200,4 +200,35 @@ defmodule QuickAverageWeb.AverageLive.StateTest do
       assert State.will_change?(@assigns, @subset) == true
     end
   end
+
+  describe("user_list/1") do
+    test "turns a presence list into a displayable users list" do
+      assert State.user_list(@presence_list) == [
+               %{
+                 name: "Darth",
+                 id: "phx-FpFUEe4C66uTTgHH",
+                 number: 6.0,
+                 only_viewing: false
+               },
+               %{
+                 name: "Luke",
+                 id: "phx-FpFUEgWEsnjpeAFB",
+                 number: 10.0,
+                 only_viewing: false
+               },
+               %{
+                 name: "De Wet",
+                 id: "phx-FpFUEhHMdytRggOC",
+                 number: 9.0,
+                 only_viewing: false
+               },
+               %{
+                 name: "JP",
+                 id: "phx-FqV4G7Id0zASHQLH",
+                 number: 1000,
+                 only_viewing: true
+               }
+             ]
+    end
+  end
 end

@@ -17,8 +17,7 @@ defmodule QuickAverageWeb.AverageLive.State do
 
   def user_list(presence_list) do
     presence_list
-    |> Map.values()
-    |> Enum.map(&extract_user/1)
+    |> Enum.map(fn {key, value} -> Map.put(extract_user(value), :id, key) end)
   end
 
   defp user_counted?(user) do
@@ -47,7 +46,7 @@ defmodule QuickAverageWeb.AverageLive.State do
            %{} = user | _
          ]
        }) do
-    user
+    user |> Map.drop([:phx_ref, :phx_ref_prev])
   end
 
   def parse_number(nil), do: nil
