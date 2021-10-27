@@ -1,5 +1,10 @@
 defmodule QuickAverageWeb.AverageLive do
+  require IEx
   use QuickAverageWeb, :live_view
+
+  alias QuickAverage.RoomCoordinator.SupervisorInterface,
+    as: CoordinatorSupervisor
+
   alias QuickAverage.Boolean
   alias QuickAverageWeb.AverageLive.State, as: LiveState
   alias QuickAverageWeb.Presence
@@ -7,7 +12,8 @@ defmodule QuickAverageWeb.AverageLive do
 
   @impl Phoenix.LiveView
   def mount(%{"room_id" => room_id}, _session, socket) do
-    QuickAverageWeb.Endpoint.subscribe(room_id)
+    CoordinatorSupervisor.create(room_id)
+    QuickAverageWeb.Endpoint.subscribe(display_topic(room_id))
 
     Presence.track(
       self(),
@@ -16,22 +22,14 @@ defmodule QuickAverageWeb.AverageLive do
       %{name: "New User", number: nil, only_viewing: false}
     )
 
-    presence_list = Presence.list(room_id)
-
-    is_admin = is_alone?(presence_list)
-
-    if is_admin do
-      send(self(), :set_admin)
-    end
-
     {:ok,
      assign(socket,
-       admin: is_admin,
+       admin: false,
        only_viewing: false,
        average: nil,
        name: "",
        number: nil,
-       presence_list: presence_list,
+       presence_list: %{},
        reveal_by_submission: false,
        reveal_by_click: false,
        room_id: room_id,
@@ -115,7 +113,7 @@ defmodule QuickAverageWeb.AverageLive do
 
     is_admin =
       socket.assigns.admin ||
-        is_admin?(socket.assigns.room_id, admin_state_token)
+        existing_admin?(socket.assigns.room_id, admin_state_token)
 
     {:noreply,
      assign(socket, admin: is_admin, name: name, only_viewing: only_viewing)}
@@ -124,7 +122,7 @@ defmodule QuickAverageWeb.AverageLive do
   @impl Phoenix.LiveView
   def handle_event("clear", _, socket) do
     if socket.assigns.admin do
-      Presence.pubsub_broadcast(socket.assigns.room_id, "clear")
+      Presence.pubsub_broadcast(display_topic(socket.assigns.room_id), "clear")
     end
 
     {:noreply, socket}
@@ -132,7 +130,7 @@ defmodule QuickAverageWeb.AverageLive do
 
   def handle_event("toggle_reveal", _, socket) do
     if socket.assigns.admin do
-      Presence.pubsub_broadcast(socket.assigns.room_id, %{
+      Presence.pubsub_broadcast(display_topic(socket.assigns.room_id), %{
         set_reveal_by_click: !socket.assigns.reveal_by_click
       })
     end
@@ -155,27 +153,20 @@ defmodule QuickAverageWeb.AverageLive do
      })}
   end
 
-  @impl true
-  def handle_info(
-        %Phoenix.Socket.Broadcast{
-          event: "presence_diff",
-          payload: payload
-        },
-        socket
-      ) do
-    :telemetry.execute([:quick_average, :presence], %{
-      event: "presence_diff"
-    })
+  def handle_info({:refresh, display_state}, socket) do
+    is_admin = socket.assigns.admin || is_alone?(display_state.user_list)
 
-    presence_list =
-      PresenceState.sync_diff(socket.assigns.presence_list, payload)
+    if is_admin != socket.assigns.admin do
+      send(self(), :set_admin)
+    end
 
     {:noreply,
      assign(socket,
-       average: LiveState.average(presence_list),
+       admin: is_admin,
+       average: display_state.average,
        debounce: debounce(),
-       presence_list: presence_list,
-       reveal_by_submission: LiveState.all_submitted?(presence_list)
+       presence_list: display_state.user_list,
+       reveal_by_submission: display_state.reveal_by_submission
      )}
   end
 
@@ -207,18 +198,15 @@ defmodule QuickAverageWeb.AverageLive do
     {:noreply, assign(socket, reveal_by_click: reveal_by_click)}
   end
 
-  def debounce do
-    {:message_queue_len, queue_length} =
-      Process.info(self(), :message_queue_len)
+  defp display_topic(room_id), do: "#{room_id}-display"
 
-    min(queue_length * 100, 500)
-  end
+  def debounce, do: 0
 
-  def is_alone?(presence_list) do
-    Enum.count(presence_list) < 2
-  end
+  def is_alone?([]), do: true
+  def is_alone?([_]), do: true
+  def is_alone?(_), do: false
 
-  def is_admin?(room_id, admin_state_token) do
+  def existing_admin?(room_id, admin_state_token) do
     admin_string = "#{room_id}:true"
 
     admin_state =

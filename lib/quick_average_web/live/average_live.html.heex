@@ -49,7 +49,7 @@
           </tr>
         </thead>
         <tbody>
-          <%= for %{name: name, number: number, only_viewing: only_viewing} <- @presence_list |> LiveState.user_list() do %>
+          <%= for %{name: name, number: number, only_viewing: only_viewing} <- @presence_list do %>
             <tr class="bg-emerald-200">
               <td class="text-left max-w-xs pr-2"> <%= name %> </td>
               <td class="text-right"> <%= display_number(number, @reveal_by_click || @reveal_by_submission, only_viewing) %> </td>

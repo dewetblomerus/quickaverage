@@ -13,7 +13,7 @@ defmodule QuickAverageWeb.LoadTest.User do
 
   @impl true
   def init({room_id, refresh_interval}) do
-    QuickAverageWeb.Endpoint.subscribe(room_id)
+    QuickAverageWeb.Endpoint.subscribe(display_topic(room_id))
     pid_string = inspect(self())
     socket = %{id: pid_string}
 
@@ -45,13 +45,13 @@ defmodule QuickAverageWeb.LoadTest.User do
       debounce: 0
     }
 
-    :timer.send_interval(refresh_interval, :refresh)
+    :timer.send_interval(refresh_interval, :tick)
     {:ok, %{assigns: assigns, id: pid_string}}
   end
 
   @impl Phoenix.LiveView
   def handle_info(
-        :refresh,
+        :tick,
         socket
       ) do
     input_name =
@@ -131,7 +131,7 @@ defmodule QuickAverageWeb.LoadTest.User do
 
     is_admin =
       socket.assigns.admin ||
-        is_admin?(socket.assigns.room_id, admin_state_token)
+        existing_admin?(socket.assigns.room_id, admin_state_token)
 
     {:noreply,
      assign(socket, admin: is_admin, name: name, only_viewing: only_viewing)}
@@ -174,26 +174,13 @@ defmodule QuickAverageWeb.LoadTest.User do
   def push_event(_, _, _), do: :ok
 
   @impl true
-  def handle_info(
-        %Phoenix.Socket.Broadcast{
-          event: "presence_diff",
-          payload: payload
-        },
-        socket
-      ) do
-    :telemetry.execute([:quick_average, :presence], %{
-      event: "presence_diff"
-    })
-
-    presence_list =
-      PresenceState.sync_diff(socket.assigns.presence_list, payload)
-
+  def handle_info({:refresh, display_state}, socket) do
     {:noreply,
      assign(socket,
-       average: LiveState.average(presence_list),
+       average: display_state.average,
        debounce: debounce(),
-       presence_list: presence_list,
-       reveal_by_submission: LiveState.all_submitted?(presence_list)
+       presence_list: display_state.user_list,
+       reveal_by_submission: display_state.reveal_by_submission
      )}
   end
 
@@ -213,7 +200,7 @@ defmodule QuickAverageWeb.LoadTest.User do
     {:noreply, assign(socket, number: nil, reveal_by_click: false)}
   end
 
-  def handle_info(%{store_state: state}, socket) do
+  def handle_info(%{store_state: _}, socket) do
     {:noreply, socket}
   end
 
@@ -225,8 +212,17 @@ defmodule QuickAverageWeb.LoadTest.User do
     {:noreply, assign(socket, reveal_by_click: reveal_by_click)}
   end
 
-  def assign(%{assigns: assigns} = socket, opts \\ []) do
+  def assign(_, _, opts \\ [])
+
+  def assign(:ok, %{assigns: assigns} = socket, opts) do
     new_assigns = Enum.into(opts, socket.assigns)
     Map.replace!(socket, :assigns, new_assigns)
   end
+
+  def assign(%{assigns: assigns} = socket, assings_kwlist, opts) do
+    new_assigns = Enum.into(opts, assigns)
+    Map.replace!(socket, :assigns, new_assigns)
+  end
+
+  defp display_topic(room_id), do: "#{room_id}-display"
 end

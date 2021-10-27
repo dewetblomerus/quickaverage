@@ -12,7 +12,9 @@ defmodule QuickAverage.Application do
         {Phoenix.PubSub, name: QuickAverage.PubSub},
         QuickAverageWeb.Presence,
         {DynamicSupervisor,
-         strategy: :one_for_one, name: QuickAverageWeb.LoadTestSupervisor}
+         strategy: :one_for_one, name: QuickAverageWeb.LoadTestSupervisor},
+        {DynamicSupervisor,
+         strategy: :one_for_one, name: QuickAverage.RoomCoordinatorSupervisor}
       ] ++ endpoint(use_https: Application.get_env(:quick_average, :use_https))
 
     opts = [strategy: :one_for_one, name: QuickAverage.Supervisor]
