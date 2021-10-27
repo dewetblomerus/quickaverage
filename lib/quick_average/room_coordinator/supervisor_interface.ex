@@ -15,8 +15,7 @@ defmodule QuickAverage.RoomCoordinator.SupervisorInterface do
     DynamicSupervisor.which_children(@supervisor)
   end
 
-  def delete do
-    [{_, pid, _, _} | _] = DynamicSupervisor.which_children(@supervisor)
+  def delete(pid) do
     DynamicSupervisor.terminate_child(@supervisor, pid)
   end
 end
