@@ -131,7 +131,7 @@ defmodule QuickAverageWeb.LoadTest.User do
 
     is_admin =
       socket.assigns.admin ||
-        is_admin?(socket.assigns.room_id, admin_state_token)
+        existing_admin?(socket.assigns.room_id, admin_state_token)
 
     {:noreply,
      assign(socket, admin: is_admin, name: name, only_viewing: only_viewing)}
@@ -179,7 +179,7 @@ defmodule QuickAverageWeb.LoadTest.User do
      assign(socket,
        average: display_state.average,
        debounce: debounce(),
-       presence_list: display_state.users_list,
+       presence_list: display_state.user_list,
        reveal_by_submission: display_state.reveal_by_submission
      )}
   end
@@ -200,7 +200,7 @@ defmodule QuickAverageWeb.LoadTest.User do
     {:noreply, assign(socket, number: nil, reveal_by_click: false)}
   end
 
-  def handle_info(%{store_state: state}, socket) do
+  def handle_info(%{store_state: _}, socket) do
     {:noreply, socket}
   end
 

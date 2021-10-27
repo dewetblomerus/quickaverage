@@ -24,7 +24,7 @@ defmodule QuickAverageWeb.AverageLive do
 
     {:ok,
      assign(socket,
-       admin: true,
+       admin: false,
        only_viewing: false,
        average: nil,
        name: "",
@@ -113,7 +113,7 @@ defmodule QuickAverageWeb.AverageLive do
 
     is_admin =
       socket.assigns.admin ||
-        is_admin?(socket.assigns.room_id, admin_state_token)
+        existing_admin?(socket.assigns.room_id, admin_state_token)
 
     {:noreply,
      assign(socket, admin: is_admin, name: name, only_viewing: only_viewing)}
@@ -154,11 +154,18 @@ defmodule QuickAverageWeb.AverageLive do
   end
 
   def handle_info({:refresh, display_state}, socket) do
+    is_admin = socket.assigns.admin || is_alone?(display_state.user_list)
+
+    if is_admin != socket.assigns.admin do
+      send(self(), :set_admin)
+    end
+
     {:noreply,
      assign(socket,
+       admin: is_admin,
        average: display_state.average,
        debounce: debounce(),
-       presence_list: display_state.users_list,
+       presence_list: display_state.user_list,
        reveal_by_submission: display_state.reveal_by_submission
      )}
   end
@@ -195,11 +202,11 @@ defmodule QuickAverageWeb.AverageLive do
 
   def debounce, do: 0
 
-  def is_alone?(presence_list) do
-    Enum.count(presence_list) < 2
-  end
+  def is_alone?([]), do: true
+  def is_alone?([_]), do: true
+  def is_alone?(_), do: false
 
-  def is_admin?(room_id, admin_state_token) do
+  def existing_admin?(room_id, admin_state_token) do
     admin_string = "#{room_id}:true"
 
     admin_state =

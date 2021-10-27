@@ -1,4 +1,5 @@
 defmodule QuickAverage.RoomCoordinator do
+  require Logger
   require IEx
   use GenServer
   alias QuickAverage.Boolean
@@ -8,13 +9,13 @@ defmodule QuickAverage.RoomCoordinator do
   @refresh_interval 50
 
   def start_link(room_id) when is_binary(room_id) do
-    name = :"#{room_id}"
+    name = :"#{__MODULE__}-#{room_id}"
     GenServer.start_link(__MODULE__, room_id, name: name)
   end
 
   @impl true
   def init(room_id) do
-    IO.puts("Starting RoomCoordinator for #{room_id} 🔥")
+    Logger.info("Starting RoomCoordinator for #{room_id} 🤖")
     Phoenix.PubSub.subscribe(QuickAverage.PubSub, room_id)
     # pid_string = inspect(self())
 
@@ -48,7 +49,7 @@ defmodule QuickAverage.RoomCoordinator do
 
   def handle_info({:update, __MODULE__}, state) do
     display_state = %{
-      users_list: LiveState.user_list(state.presence_list),
+      user_list: LiveState.user_list(state.presence_list),
       average: LiveState.average(state.presence_list),
       reveal_by_submission: LiveState.all_submitted?(state.presence_list)
     }
