@@ -23,9 +23,11 @@ defmodule QuickAverage.RoomCoordinator do
     presence_list = Presence.list(room_id)
 
     state = %{
-      room_id: room_id,
+      display_version: 0,
       presence_list: presence_list,
-      start_time: now()
+      room_id: room_id,
+      start_time: now(),
+      version: 0
     }
 
     Process.send_after(self(), {:update, __MODULE__}, 1)
@@ -47,10 +49,18 @@ defmodule QuickAverage.RoomCoordinator do
 
     new_presence_list = PresenceState.sync_diff(state.presence_list, payload)
 
-    {:noreply, %{state | presence_list: new_presence_list}}
+    new_version = state.version + 1
+
+    {:noreply,
+     %{state | presence_list: new_presence_list, version: new_version}}
   end
 
-  def handle_info({:update, __MODULE__}, state) do
+  @impl true
+  def handle_info(
+        {:update, __MODULE__},
+        %{version: version, display_version: display_version} = state
+      )
+      when version > display_version do
     :telemetry.execute([:quick_average, :update_display], %{
       event: "update_display_data"
     })
@@ -70,6 +80,12 @@ defmodule QuickAverage.RoomCoordinator do
       {:refresh, display_state}
     )
 
+    Process.send_after(self(), {:update, __MODULE__}, @refresh_interval)
+    {:noreply, %{state | display_version: version}}
+  end
+
+  @impl true
+  def handle_info({:update, __MODULE__}, state) do
     Process.send_after(self(), {:update, __MODULE__}, @refresh_interval)
     {:noreply, state}
   end
