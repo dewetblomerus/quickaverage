@@ -240,7 +240,7 @@ defmodule QuickAverageWeb.AverageLive do
 
   defp display_number(number, reveal, only_viewing \\ false)
 
-  defp display_number(_, _, "true"), do: "SHIT"
+  defp display_number(_, _, "true"), do: "💩"
   defp display_number(_, _, true), do: "Viewing"
 
   defp display_number(nil, _, _), do: "Waiting"
