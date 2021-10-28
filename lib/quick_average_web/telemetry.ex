@@ -31,7 +31,8 @@ defmodule QuickAverageWeb.Telemetry do
       ),
 
       # App Metrics
-      counter("quick_average.presence.event"),
+      counter("quick_average.presence_diff.event"),
+      counter("quick_average.update_display.event"),
 
       # VM Metrics
       summary("vm.memory.total", unit: {:byte, :kilobyte}),

@@ -41,7 +41,7 @@ defmodule QuickAverage.RoomCoordinator do
         },
         state
       ) do
-    :telemetry.execute([:quick_average, :presence], %{
+    :telemetry.execute([:quick_average, :presence_diff], %{
       event: "presence_diff"
     })
 
@@ -51,6 +51,10 @@ defmodule QuickAverage.RoomCoordinator do
   end
 
   def handle_info({:update, __MODULE__}, state) do
+    :telemetry.execute([:quick_average, :update_display], %{
+      event: "update_display_data"
+    })
+
     user_list = LiveState.user_list(state.presence_list)
 
     consider_stopping(user_list, state)
