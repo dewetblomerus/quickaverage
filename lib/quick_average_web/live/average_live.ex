@@ -12,6 +12,8 @@ defmodule QuickAverageWeb.AverageLive do
 
   @impl Phoenix.LiveView
   def mount(%{"room_id" => room_id}, _session, socket) do
+    send(self(), :initiate_restore_user)
+
     CoordinatorSupervisor.create(room_id)
     QuickAverageWeb.Endpoint.subscribe(display_topic(room_id))
 
@@ -188,6 +190,10 @@ defmodule QuickAverageWeb.AverageLive do
 
   def handle_info(%{store_state: state}, socket) do
     {:noreply, push_event(socket, "set_storage", state)}
+  end
+
+  def handle_info(:initiate_restore_user, socket) do
+    {:noreply, push_event(socket, "initiate_restore_user", %{})}
   end
 
   def handle_info("clear_number_front", socket) do
