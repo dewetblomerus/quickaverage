@@ -29,7 +29,7 @@
   <h1 class="text-r text-3xl m-3">Average: <%= display_average(@average, @reveal_by_click || @reveal_by_submission) %></h1>
 
   <%= if @admin do %>
-    <button phx-click="clear" class="bg-blue-500 hover:bg-blue-700 text-gray-100 py-1 px-4 border border-gray-400 rounded-lg mb-2" >
+    <button phx-click="clear_clicked" class="bg-blue-500 hover:bg-blue-700 text-gray-100 py-1 px-4 border border-gray-400 rounded-lg mb-2" >
       Clear Numbers
     </button>
     <button phx-click="toggle_reveal" disabled={@reveal_by_submission} class={"#{if @reveal_by_submission, do: "bg-gray-400", else: "bg-blue-500 hover:bg-blue-700"}  text-gray-100 py-1 px-4 border border-gray-400 rounded-lg mb-2"} >

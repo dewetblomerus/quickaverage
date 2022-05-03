@@ -122,7 +122,7 @@ defmodule QuickAverageWeb.AverageLive do
   end
 
   @impl Phoenix.LiveView
-  def handle_event("clear", _, socket) do
+  def handle_event("clear_clicked", _, socket) do
     if socket.assigns.admin do
       Presence.pubsub_broadcast(display_topic(socket.assigns.room_id), "clear")
     end

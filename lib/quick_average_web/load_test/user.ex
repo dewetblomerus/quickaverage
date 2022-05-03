@@ -137,15 +137,6 @@ defmodule QuickAverageWeb.LoadTest.User do
      assign(socket, admin: is_admin, name: name, only_viewing: only_viewing)}
   end
 
-  @impl Phoenix.LiveView
-  def handle_event("clear", _, socket) do
-    if socket.assigns.admin do
-      Presence.pubsub_broadcast(socket.assigns.room_id, "clear")
-    end
-
-    {:noreply, socket}
-  end
-
   def handle_event("toggle_reveal", _, socket) do
     if socket.assigns.admin do
       Presence.pubsub_broadcast(socket.assigns.room_id, %{
