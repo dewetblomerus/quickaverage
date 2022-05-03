@@ -35,12 +35,24 @@ Hooks.ClearNumber = {
   },
 }
 
-Hooks.GetStorage = {
+Hooks.RestoreUser = {
   mounted() {
     this.pushEvent('restore_user', {
       admin_state: localStorage.getItem('admin_state'),
       name: localStorage.getItem('name'),
       only_viewing: localStorage.getItem('only_viewing'),
+    })
+  },
+}
+
+Hooks.InitiateRestoreUser = {
+  mounted() {
+    this.handleEvent('initiate_restore_user', () => {
+      this.pushEvent('restore_user', {
+        admin_state: localStorage.getItem('admin_state'),
+        name: localStorage.getItem('name'),
+        only_viewing: localStorage.getItem('only_viewing'),
+      })
     })
   },
 }

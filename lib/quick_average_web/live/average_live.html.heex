@@ -1,7 +1,8 @@
 <section>
-  <div id="hooker" phx-hook="GetStorage"></div>
-  <div id="hooker" phx-hook="SetStorage"></div>
   <div id="hooker" phx-hook="ClearNumber"></div>
+  <div id="hooker" phx-hook="InitiateRestoreUser"></div>
+  <div id="hooker" phx-hook="RestoreUser"></div>
+  <div id="hooker" phx-hook="SetStorage"></div>
   <div class="w-full max-w-xs m-auto">
     <form phx-change="update" phx-submit="find-average" class="bg-white border  rounded-lg px-8 pt-6 pb-2 mb-4">
       <div class="mb-4">
@@ -28,7 +29,7 @@
   <h1 class="text-r text-3xl m-3">Average: <%= display_average(@average, @reveal_by_click || @reveal_by_submission) %></h1>
 
   <%= if @admin do %>
-    <button phx-click="clear" class="bg-blue-500 hover:bg-blue-700 text-gray-100 py-1 px-4 border border-gray-400 rounded-lg mb-2" >
+    <button phx-click="clear_clicked" class="bg-blue-500 hover:bg-blue-700 text-gray-100 py-1 px-4 border border-gray-400 rounded-lg mb-2" >
       Clear Numbers
     </button>
     <button phx-click="toggle_reveal" disabled={@reveal_by_submission} class={"#{if @reveal_by_submission, do: "bg-gray-400", else: "bg-blue-500 hover:bg-blue-700"}  text-gray-100 py-1 px-4 border border-gray-400 rounded-lg mb-2"} >
