@@ -186,7 +186,7 @@ defmodule QuickAverageWeb.LoadTest.User do
 
   @impl true
   def handle_info("clear", socket) do
-    send(self(), "clear_number_front")
+    send(self(), :clear_number)
 
     room_update(
       socket,
@@ -204,7 +204,7 @@ defmodule QuickAverageWeb.LoadTest.User do
     {:noreply, socket}
   end
 
-  def handle_info("clear_number_front", socket) do
+  def handle_info(:clear_number, socket) do
     {:noreply, socket}
   end
 

@@ -174,7 +174,7 @@ defmodule QuickAverageWeb.AverageLive do
 
   @impl true
   def handle_info("clear", socket) do
-    send(self(), "clear_number_front")
+    send(self(), :clear_number)
 
     room_update(
       socket,
@@ -196,7 +196,7 @@ defmodule QuickAverageWeb.AverageLive do
     {:noreply, push_event(socket, "initiate_restore_user", %{})}
   end
 
-  def handle_info("clear_number_front", socket) do
+  def handle_info(:clear_number, socket) do
     {:noreply, push_event(socket, "clear_number", %{})}
   end
 
