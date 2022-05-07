@@ -19,7 +19,7 @@ defmodule UserListItem do
     """
   end
 
-  defp display_number(number, reveal, only_viewing \\ false)
+  defp display_number(number, reveal, only_viewing)
 
   defp display_number(_, _, "true"), do: "💩"
   defp display_number(_, _, true), do: "Viewing"
