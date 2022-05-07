@@ -15,6 +15,7 @@ defmodule QuickAverageWeb.LoadTestLive do
      )}
   end
 
+  @impl true
   def handle_event(
         "update",
         %{

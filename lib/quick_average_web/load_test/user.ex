@@ -4,7 +4,6 @@ defmodule QuickAverageWeb.LoadTest.User do
   alias QuickAverage.Boolean
   alias QuickAverageWeb.AverageLive.State, as: LiveState
   alias QuickAverageWeb.Presence
-  alias QuickAverageWeb.Presence.State, as: PresenceState
   require IEx
 
   def start_link({room_id, refresh_interval}) when is_binary(room_id) do
@@ -49,7 +48,19 @@ defmodule QuickAverageWeb.LoadTest.User do
     {:ok, %{assigns: assigns, id: pid_string}}
   end
 
-  @impl Phoenix.LiveView
+  def handle_event("toggle_reveal", _, socket) do
+    if socket.assigns.admin do
+      Presence.pubsub_broadcast(socket.assigns.room_id, %{
+        set_reveal_by_click: !socket.assigns.reveal_by_click
+      })
+    end
+
+    {:noreply, socket}
+  end
+
+  def push_event(_, _, _), do: :ok
+
+  @impl true
   def handle_info(
         :tick,
         socket
@@ -112,39 +123,15 @@ defmodule QuickAverageWeb.LoadTest.User do
      )}
   end
 
-  @impl Phoenix.LiveView
-  def handle_event(
-        "restore_user",
-        %{
-          "admin_state" => admin_state_token,
-          "name" => name,
-          "only_viewing" => state_only_viewing
-        },
-        socket
-      ) do
-    only_viewing = Boolean.parse(state_only_viewing)
-
-    room_update(
-      socket,
-      %{name: name, number: nil, only_viewing: only_viewing}
-    )
-
-    is_admin =
-      socket.assigns.admin ||
-        existing_admin?(socket.assigns.room_id, admin_state_token)
-
+  @impl true
+  def handle_info({:refresh, display_state}, socket) do
     {:noreply,
-     assign(socket, admin: is_admin, name: name, only_viewing: only_viewing)}
-  end
-
-  def handle_event("toggle_reveal", _, socket) do
-    if socket.assigns.admin do
-      Presence.pubsub_broadcast(socket.assigns.room_id, %{
-        set_reveal_by_click: !socket.assigns.reveal_by_click
-      })
-    end
-
-    {:noreply, socket}
+     assign(socket,
+       average: display_state.average,
+       debounce: debounce(),
+       presence_list: display_state.user_list,
+       reveal_by_submission: display_state.reveal_by_submission
+     )}
   end
 
   @impl true
@@ -160,19 +147,6 @@ defmodule QuickAverageWeb.LoadTest.User do
      push_event(socket, "set_storage", %{
        admin_state: admin_state_token
      })}
-  end
-
-  def push_event(_, _, _), do: :ok
-
-  @impl true
-  def handle_info({:refresh, display_state}, socket) do
-    {:noreply,
-     assign(socket,
-       average: display_state.average,
-       debounce: debounce(),
-       presence_list: display_state.user_list,
-       reveal_by_submission: display_state.reveal_by_submission
-     )}
   end
 
   @impl true
@@ -191,14 +165,17 @@ defmodule QuickAverageWeb.LoadTest.User do
     {:noreply, assign(socket, number: nil, reveal_by_click: false)}
   end
 
+  @impl true
   def handle_info(%{store_state: _}, socket) do
     {:noreply, socket}
   end
 
+  @impl true
   def handle_info(:clear_number, socket) do
     {:noreply, socket}
   end
 
+  @impl true
   def handle_info(%{set_reveal_by_click: reveal_by_click}, socket) do
     {:noreply, assign(socket, reveal_by_click: reveal_by_click)}
   end
@@ -206,11 +183,11 @@ defmodule QuickAverageWeb.LoadTest.User do
   def assign(_, _, opts \\ [])
 
   def assign(:ok, %{assigns: assigns} = socket, opts) do
-    new_assigns = Enum.into(opts, socket.assigns)
+    new_assigns = Enum.into(opts, assigns)
     Map.replace!(socket, :assigns, new_assigns)
   end
 
-  def assign(%{assigns: assigns} = socket, assings_kwlist, opts) do
+  def assign(%{assigns: assigns} = socket, _assings_kwlist, opts) do
     new_assigns = Enum.into(opts, assigns)
     Map.replace!(socket, :assigns, new_assigns)
   end
