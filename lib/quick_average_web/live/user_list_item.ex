@@ -6,7 +6,7 @@ defmodule UserListItem do
 
   def render(assigns) do
     ~H"""
-    <tr class="bg-emerald-200">
+    <tr>
       <td class="text-left max-w-xs pr-2"><%= @name %></td>
       <td class="text-right">
         <%= display_number(

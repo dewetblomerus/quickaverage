@@ -8,7 +8,6 @@ defmodule QuickAverageWeb.AverageLive do
   alias QuickAverage.Boolean
   alias QuickAverageWeb.AverageLive.State, as: LiveState
   alias QuickAverageWeb.Presence
-  alias QuickAverageWeb.Presence.State, as: PresenceState
 
   @impl Phoenix.LiveView
   def mount(%{"room_id" => room_id}, _session, socket) do

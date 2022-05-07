@@ -3,7 +3,6 @@ defmodule QuickAverage.RoomCoordinator do
   require IEx
   use GenServer
   alias QuickAverage.RoomCoordinator.SupervisorInterface
-  alias QuickAverage.Boolean
   alias QuickAverageWeb.AverageLive.State, as: LiveState
   alias QuickAverageWeb.Presence
   alias QuickAverageWeb.Presence.State, as: PresenceState

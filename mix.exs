@@ -45,6 +45,7 @@ defmodule QuickAverage.MixProject do
       {:phoenix, "~> 1.6.8"},
       {:plug_cowboy, "~> 2.0"},
       {:site_encrypt, "~> 0.4"},
+      {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 0.5"}
     ]
@@ -59,8 +60,8 @@ defmodule QuickAverage.MixProject do
   defp aliases do
     [
       "assets.deploy": [
-        "cmd --cd assets npm run deploy",
         "esbuild default --minify",
+        "tailwind default --minify",
         "phx.digest"
       ]
     ]
