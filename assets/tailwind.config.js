@@ -7,7 +7,7 @@ module.exports = {
     '../lib/**/*.leex',
     './js/**/*.js',
   ],
-  darkMode: false, // or 'media' or 'class'
+  darkMode: 'media',
   theme: {
     extend: {},
   },
