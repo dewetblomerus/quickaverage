@@ -1,7 +1,7 @@
 FROM elixir:1.13.4-alpine AS build
 
 # install build dependencies
-RUN apk add --no-cache build-base npm git python3
+RUN apk add --no-cache build-base git python3
 
 # prepare build dir
 WORKDIR /app
@@ -20,7 +20,6 @@ RUN mix do deps.get, deps.compile
 
 # build assets
 COPY assets/package.json assets/package-lock.json ./assets/
-RUN npm --prefix ./assets ci --progress=false --no-audit --loglevel=error
 
 COPY assets assets
 COPY priv priv
