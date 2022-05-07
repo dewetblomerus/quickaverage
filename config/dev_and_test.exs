@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 config :quick_average, QuickAverageWeb.Endpoint,
   secret_key_base:

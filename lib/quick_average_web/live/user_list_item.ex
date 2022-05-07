@@ -7,8 +7,14 @@ defmodule UserListItem do
   def render(assigns) do
     ~H"""
     <tr class="bg-emerald-200">
-      <td class="text-left max-w-xs pr-2"> <%= @name %> </td>
-      <td class="text-right"> <%= display_number(@number, @reveal_by_click || @reveal_by_submission, @only_viewing) %> </td>
+      <td class="text-left max-w-xs pr-2"><%= @name %></td>
+      <td class="text-right">
+        <%= display_number(
+          @number,
+          @reveal_by_click || @reveal_by_submission,
+          @only_viewing
+        ) %>
+      </td>
     </tr>
     """
   end
