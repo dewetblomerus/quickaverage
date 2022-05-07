@@ -19,8 +19,6 @@ COPY config config
 RUN mix do deps.get, deps.compile
 
 # build assets
-COPY assets/package.json assets/package-lock.json ./assets/
-
 COPY assets assets
 COPY priv priv
 
