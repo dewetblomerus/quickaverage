@@ -1,0 +1,25 @@
+# QuickAverage is live at [quickaverage.com](https://quickaverage.com)
+
+## Section
+
+Development:
+
+* Install dependencies with `mix deps.get`
+* Install Node.js dependencies with `npm install` inside the `assets` directory
+* Start Phoenix endpoint with `mix phx.server`
+
+Set your OS to trust the cert in `tmp/site_encrypt_db/certs/av.dev/cert.pem`
+
+Now you can visit [`av.dev:4001`](http://av.dev:4001) from your browser.
+
+## Livebook
+
+`iex --sname quick --cookie average -S mix phx.server`
+
+`LIVEBOOK_HOME=$(pwd) livebook server`
+
+```elixir
+alias QuickAverage.RoomCoordinator.SupervisorInterface
+
+SupervisorInterface.create("6")
+```
