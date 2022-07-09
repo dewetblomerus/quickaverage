@@ -10,7 +10,7 @@ defmodule QuickAverage.RoomCoordinator do
   @idle_seconds_before_stop 10
 
   def start_link(room_id) when is_binary(room_id) do
-    name = :"#{__MODULE__}-#{room_id}"
+    name = {:via, Registry, {QuickAverage.Registry, room_id}}
     GenServer.start_link(__MODULE__, room_id, name: name)
   end
 

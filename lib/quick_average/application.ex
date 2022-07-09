@@ -11,6 +11,7 @@ defmodule QuickAverage.Application do
         QuickAverageWeb.Telemetry,
         {Phoenix.PubSub, name: QuickAverage.PubSub},
         QuickAverageWeb.Presence,
+        {Registry, keys: :unique, name: QuickAverage.Registry},
         {DynamicSupervisor,
          strategy: :one_for_one, name: QuickAverageWeb.LoadTestSupervisor},
         {DynamicSupervisor,
