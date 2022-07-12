@@ -1,8 +1,26 @@
 import Config
 
+[
+  username: username,
+  password: password
+] =
+  case config_env() do
+    :dev ->
+      [
+        username: "asdf",
+        password: "asdf"
+      ]
+
+    _ ->
+      [
+        username: System.fetch_env!("ADMIN_USERNAME"),
+        password: System.fetch_env!("ADMIN_PASSWORD")
+      ]
+  end
+
 config :quick_average,
-  username: System.fetch_env!("ADMIN_USERNAME"),
-  password: System.fetch_env!("ADMIN_PASSWORD")
+  username: username,
+  password: password
 
 if config_env() == :prod do
   # The secret key base is used to sign/encrypt cookies and other secrets.
@@ -21,7 +39,7 @@ if config_env() == :prod do
   port = String.to_integer(System.get_env("PORT") || "4000")
 
   config :quick_average, QuickAverageWeb.Endpoint,
-    url: [host: host, port: 443, scheme: "https"],
+    url: [host: nil, port: 443, scheme: "https"],
     http: [
       # Enable IPv6 and bind on all interfaces.
       # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
