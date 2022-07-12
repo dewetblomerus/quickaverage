@@ -9,8 +9,6 @@ config :quick_average, QuickAverageWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base:
-    "SMm0XfyoZ056FTfAgeyXalvQMo0qMhUlNAejtJyw49+dKRzSraFa3ZCdArfUX2L0",
   watchers: [
     esbuild:
       {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}

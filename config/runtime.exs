@@ -5,7 +5,7 @@ import Config
   password: password
 ] =
   case config_env() do
-    :dev ->
+    e when e in [:dev, :test] ->
       [
         username: "asdf",
         password: "asdf"
