@@ -107,5 +107,5 @@ defmodule QuickAverage.RoomCoordinator do
 
   def consider_stopping(_, _), do: nil
 
-  defp now(), do: DateTime.now!("Etc/UTC") |> DateTime.to_unix()
+  defp now, do: DateTime.now!("Etc/UTC") |> DateTime.to_unix()
 end
