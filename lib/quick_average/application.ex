@@ -6,32 +6,20 @@ defmodule QuickAverage.Application do
   use Application
 
   def start(_type, _args) do
-    children =
-      [
-        QuickAverageWeb.Telemetry,
-        {Phoenix.PubSub, name: QuickAverage.PubSub},
-        QuickAverageWeb.Presence,
-        {Registry, keys: :unique, name: QuickAverage.Registry},
-        {DynamicSupervisor,
-         strategy: :one_for_one, name: QuickAverageWeb.LoadTestSupervisor},
-        {DynamicSupervisor,
-         strategy: :one_for_one, name: QuickAverage.RoomCoordinatorSupervisor}
-      ] ++ endpoint(use_https: Application.get_env(:quick_average, :use_https))
+    children = [
+      QuickAverageWeb.Telemetry,
+      {Phoenix.PubSub, name: QuickAverage.PubSub},
+      QuickAverageWeb.Presence,
+      {Registry, keys: :unique, name: QuickAverage.Registry},
+      {DynamicSupervisor,
+       strategy: :one_for_one, name: QuickAverageWeb.LoadTestSupervisor},
+      {DynamicSupervisor,
+       strategy: :one_for_one, name: QuickAverage.RoomCoordinatorSupervisor},
+      QuickAverageWeb.Endpoint
+    ]
 
     opts = [strategy: :one_for_one, name: QuickAverage.Supervisor]
     Supervisor.start_link(children, opts)
-  end
-
-  defp endpoint(use_https: false) do
-    [
-      QuickAverageWeb.Endpoint
-    ]
-  end
-
-  defp endpoint(use_https: true) do
-    [
-      {SiteEncrypt.Phoenix, QuickAverageWeb.Endpoint}
-    ]
   end
 
   # Tell Phoenix to update the endpoint configuration
