@@ -35,7 +35,7 @@ defmodule QuickAverage.MixProject do
     [
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:esbuild, "~> 0.5", runtime: Mix.env() == :dev},
-      {:floki, ">= 0.27.0", only: :test},
+      {:floki, ">= 0.30.0", only: :test},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false},
