@@ -47,7 +47,7 @@ defmodule QuickAverage.MixProject do
       {:plug_cowboy, "~> 2.6"},
       {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
       {:telemetry_metrics, "~> 0.6"},
-      {:telemetry_poller, "~> 0.5"}
+      {:telemetry_poller, "~> 1.0"}
     ]
   end
 
