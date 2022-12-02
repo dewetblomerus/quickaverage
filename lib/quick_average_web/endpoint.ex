@@ -24,10 +24,6 @@ defmodule QuickAverageWeb.Endpoint do
     signing_salt: "LjV6yTFf"
   ]
 
-  socket "/socket", QuickAverageWeb.UserSocket,
-    websocket: true,
-    longpoll: false
-
   socket "/live", Phoenix.LiveView.Socket,
     websocket: [connect_info: [session: @session_options]]
 
