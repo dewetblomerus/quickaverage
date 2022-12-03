@@ -1,11 +1,13 @@
 # QuickAverage is live at [quickaverage.com](https://quickaverage.com)
 
 ```elixir
+# Ignore this code block, it is just setup for Livebook
+
 my_app_root = Path.join(__DIR__, ".")
 
 Mix.install(
   [
-    {:notify, path: my_app_root, env: :dev}
+    {:quick_average, path: my_app_root, env: :dev}
   ],
   config_path: Path.join(my_app_root, "config/config.exs"),
   lockfile: Path.join(my_app_root, "mix.lock")
