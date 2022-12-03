@@ -24,8 +24,9 @@ Mix.install(
 
 ### Local Development
 
-* Install dependencies with `mix deps.get`
-* Start Phoenix with `mix phx.server`
+* Install Erlang and Elixir: `asdf install`
+* Install dependencies: `mix deps.get`
+* Start Phoenix: `mix phx.server`
 
 ## Livebook
 
