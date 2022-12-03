@@ -1,25 +1,28 @@
 # QuickAverage is live at [quickaverage.com](https://quickaverage.com)
 
+```elixir
+my_app_root = Path.join(__DIR__, ".")
+
+Mix.install(
+  [
+    {:notify, path: my_app_root, env: :dev}
+  ],
+  config_path: Path.join(my_app_root, "config/config.exs"),
+  lockfile: Path.join(my_app_root, "mix.lock")
+)
+```
+
 ## Section
 
 Development:
 
 * Install dependencies with `mix deps.get`
-* Install Node.js dependencies with `npm install` inside the `assets` directory
 * Start Phoenix endpoint with `mix phx.server`
-
-Set your OS to trust the cert in `tmp/site_encrypt_db/certs/av.dev/cert.pem`
-
-Now you can visit [`av.dev:4001`](http://av.dev:4001) from your browser.
 
 ## Livebook
 
-`iex --sname quick --cookie average -S mix phx.server`
-
-`LIVEBOOK_HOME=$(pwd) livebook server`
-
 ```elixir
-alias QuickAverage.RoomCoordinator.SupervisorInterface
+alias QuickAverageWeb.AverageLive.State
 
-SupervisorInterface.create("6")
+State.parse_number("3.3333")
 ```
