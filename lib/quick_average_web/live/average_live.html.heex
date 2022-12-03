@@ -50,8 +50,10 @@
   </div>
 
   <h1 class="text-r text-3xl m-3">
-    Average:
-    <%= display_average(@average, @reveal_by_click || @reveal_by_submission) %>
+    Average: <%= display_average(
+      @average,
+      @reveal_by_click || @reveal_by_submission
+    ) %>
   </h1>
 
   <%= if @admin do %>
