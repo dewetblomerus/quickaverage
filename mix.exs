@@ -45,7 +45,6 @@ defmodule QuickAverage.MixProject do
       {:phoenix_view, "~> 2.0"},
       {:phoenix, "~> 1.7.0-rc.0", override: true},
       {:plug_cowboy, "~> 2.6"},
-      {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"}
     ]
@@ -61,7 +60,6 @@ defmodule QuickAverage.MixProject do
     [
       "assets.deploy": [
         "esbuild default --minify",
-        "tailwind default --minify",
         "phx.digest"
       ]
     ]
