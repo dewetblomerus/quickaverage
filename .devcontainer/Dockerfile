@@ -39,4 +39,4 @@ RUN apt-get update \
     && apt-get -y install --no-install-recommends inotify-tools
 
 # [Optional] Uncomment this line to install additional package.
-RUN  mix deps.get
+# RUN  mix deps.get
