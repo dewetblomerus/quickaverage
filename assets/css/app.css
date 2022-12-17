@@ -1,5 +1,7 @@
 /* This file is for your main application CSS */
-
+body {
+  background-color: pink;
+}
 /* Alerts and form errors used by phx.new */
 .alert {
   padding: 15px;
