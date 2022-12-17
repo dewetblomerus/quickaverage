@@ -30,6 +30,9 @@ Mix.install(
 
 ## Livebook
 
+Start Livebook
+`livebook server README.livemd`
+
 ```elixir
 alias QuickAverageWeb.AverageLive.State
 
