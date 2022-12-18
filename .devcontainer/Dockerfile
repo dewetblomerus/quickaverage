@@ -1,6 +1,6 @@
 # Update the VARIANT arg in docker-compose.yml to pick an Elixir version: 1.9, 1.10, 1.10.4
 ARG VARIANT=latest
-FROM elixir:${VARIANT}
+FROM hexpm/elixir:${VARIANT}
 
 # This Dockerfile adds a non-root user with sudo access. Update the “remoteUser” property in
 # devcontainer.json to use it. More info: https://aka.ms/vscode-remote/containers/non-root-user.
@@ -39,4 +39,4 @@ RUN apt-get update \
     && apt-get -y install --no-install-recommends inotify-tools
 
 # [Optional] Uncomment this line to install additional package.
-RUN  mix deps.get
+# RUN  mix deps.get

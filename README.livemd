@@ -24,7 +24,7 @@ Mix.install(
 
 ### Local Development
 
-* Install Erlang and Elixir: `asdf install`
+* Install Erlang and Elixir: `asdf install` (skip this for codespaces)
 * Install dependencies: `mix deps.get`
 * Start Phoenix: `mix phx.server`
 
