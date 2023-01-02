@@ -1,7 +1,3 @@
-/* This file is for your main application CSS */
-body {
-  background-color: pink;
-}
 /* Alerts and form errors used by phx.new */
 .alert {
   padding: 15px;
@@ -9,27 +5,33 @@ body {
   border: 1px solid transparent;
   border-radius: 4px;
 }
+
 .alert-info {
   color: #31708f;
   background-color: #d9edf7;
   border-color: #bce8f1;
 }
+
 .alert-warning {
   color: #8a6d3b;
   background-color: #fcf8e3;
   border-color: #faebcc;
 }
+
 .alert-danger {
   color: #a94442;
   background-color: #f2dede;
   border-color: #ebccd1;
 }
+
 .alert p {
   margin-bottom: 0;
 }
+
 .alert:empty {
   display: none;
 }
+
 .invalid-feedback {
   color: #a94442;
   display: block;
@@ -50,6 +52,7 @@ body {
 .phx-disconnected {
   cursor: wait;
 }
+
 .phx-disconnected * {
   pointer-events: none;
 }
@@ -88,3 +91,53 @@ body {
   text-decoration: none;
   cursor: pointer;
 }
+
+
+body {
+  background-color: #F2F5F7;
+  margin: 0;
+  padding: 32px;
+  display: flex;
+  justify-content: center;
+}
+
+#wrapper {
+  background-color: red;
+  width: 320px;
+  padding: 16px;
+  align-self: center;
+  overflow: hidden;
+  border-radius: 4px;
+  box-shadow: 0px 0px 16px rgba(42, 63, 77, 0.05);
+  background-color: #fff;
+  padding: 32px;
+
+}
+
+#wrapper form {
+  display: flex;
+  row-gap: 24px;
+  flex-direction: column;
+}
+
+#wrapper form>div>* {
+  display: block;
+  width: 100%;
+}
+
+#wrapper form>div>input {
+  height: 40px;
+  border: 2px solid #7A909E;
+  line-height: 16px;
+  padding: 12px;
+  box-sizing: border-box;
+  border-radius: 2px;
+  font-size: 1rem;
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+}
+
+h3 {}
