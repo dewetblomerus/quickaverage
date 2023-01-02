@@ -99,6 +99,7 @@ body {
   padding: 32px;
   display: flex;
   justify-content: center;
+  font-family: sans-serif;
 }
 
 #wrapper {
@@ -121,8 +122,10 @@ body {
 }
 
 #wrapper form>div>* {
-  display: block;
+  display: flex;
   width: 100%;
+  row-gap: 12px;
+  flex-direction: column;
 }
 
 #wrapper form>div>input {
@@ -133,6 +136,15 @@ body {
   box-sizing: border-box;
   border-radius: 2px;
   font-size: 1rem;
+}
+
+#wrapper form>div>label {
+  font-size: 18px;
+
+}
+
+#wrapper form>div>label+input {
+  padding-top: 12px;
 }
 
 section {
