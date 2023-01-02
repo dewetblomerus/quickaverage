@@ -121,11 +121,10 @@ body {
   flex-direction: column;
 }
 
+#wrapper form>div {}
+
 #wrapper form>div>* {
-  display: flex;
   width: 100%;
-  row-gap: 12px;
-  flex-direction: column;
 }
 
 #wrapper form>div>input {
@@ -138,9 +137,14 @@ body {
   font-size: 1rem;
 }
 
-#wrapper form>div>label {
-  font-size: 18px;
+#wrapper form>div>input:focus {
+  outline: none;
+  border-color: #186ADE;
+  box-shadow: 0px 0px 0px 4px #D4E4FA;
+}
 
+#wrapper form>div>label {
+  font-size: 16px;
 }
 
 #wrapper form>div>label+input {
@@ -152,4 +156,13 @@ section {
   flex-direction: column;
 }
 
-h3 {}
+[data-inputType="standard"] {
+  display: flex;
+  row-gap: 8px;
+  flex-direction: column;
+}
+
+[data-inputType="standard"] label {
+  font-weight: 600;
+  ;
+}

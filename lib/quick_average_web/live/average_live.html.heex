@@ -5,7 +5,7 @@
   <div id="hooker" phx-hook="SetStorage"></div>
   <div id="wrapper">
     <form phx-change="update" phx-submit="find-average">
-      <div>
+      <div data-inputType="standard">
         <label for="name">
           Name
         </label>
@@ -14,12 +14,11 @@
           name="name"
           value={@name}
           phx-debounce={@debounce}
-          placeholder="Name"
           autocomplete="off"
           id="name"
         />
       </div>
-      <div>
+      <div data-inputType="standard">
         <label for="number">
           Number
         </label>
@@ -29,7 +28,6 @@
           value={@number}
           disabled={@only_viewing}
           phx-debounce={@debounce}
-          placeholder="Number"
           autocomplete="off"
           id="number"
         />
