@@ -8,6 +8,7 @@ defmodule QuickAverageWeb.AverageLive do
   alias QuickAverage.Boolean
   alias QuickAverageWeb.AverageLive.State, as: LiveState
   alias QuickAverageWeb.Presence
+  alias QuickAverage.User
 
   @impl Phoenix.LiveView
   def mount(%{"room_id" => room_id}, _session, socket) do
@@ -23,6 +24,8 @@ defmodule QuickAverageWeb.AverageLive do
       %{name: "New User", number: nil, only_viewing: false}
     )
 
+    changeset = User.changeset(%User{}, %{})
+
     {:ok,
      assign(socket,
        admin: false,
@@ -34,7 +37,8 @@ defmodule QuickAverageWeb.AverageLive do
        reveal_by_submission: false,
        reveal_by_click: false,
        room_id: room_id,
-       debounce: 0
+       debounce: 0,
+       changeset: changeset
      )}
   end
 

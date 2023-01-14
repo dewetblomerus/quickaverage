@@ -4,7 +4,10 @@
   <div id="hooker" phx-hook="RestoreUser"></div>
   <div id="hooker" phx-hook="SetStorage"></div>
   <div class="w-full max-w-xs m-auto">
-    <form
+    <.form
+      :let={f}
+      for={@changeset}
+      id="user-form"
       phx-change="update"
       phx-submit="find-average"
       class="bg-white border  rounded-lg px-8 pt-6 pb-2 my-4"
@@ -46,7 +49,7 @@
         </label>
         <%= checkbox(:role, :only_viewing, value: @only_viewing) %>
       </div>
-    </form>
+    </.form>
   </div>
 
   <h1 class="text-r text-3xl m-3">
